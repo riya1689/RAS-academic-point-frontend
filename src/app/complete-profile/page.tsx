@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react"; // রিঅ্যাক্ট স্টেট, ইফেক্ট এবং সাসপেন্স আমদানী করা হচ্ছে
+import { useRouter, useSearchParams } from "next/navigation"; // নেভিগেশন হুকসমূহ আমদানী করা হচ্ছে
 import api from "@/lib/api";
 
-export default function CompleteProfilePage() {
+function CompleteProfileContent() { // প্রোফাইল সম্পন্নের মূল কন্টেন্ট ফাংশন শুরু
   const router = useRouter();
   const searchParams = useSearchParams();
   const [userId, setUserId] = useState("");
@@ -143,5 +143,12 @@ export default function CompleteProfilePage() {
         </form>
       </div>
     </div>
-  );
-}
+  ); // মূল লেআউট রিটার্ন শেষ
+} // কন্টেন্ট ফাংশন শেষ
+export default function CompleteProfilePage() { // মূল ডিফল্ট পেজ কম্পোনেন্ট
+  return ( // রিটার্ন ভিউ
+    <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">Loading profile setup...</div>}> // লোডিং এর জন্য সাসপেন্স বাউন্ডারি
+      <CompleteProfileContent /> // কন্টেন্ট কম্পোনেন্ট রেন্ডার
+    </Suspense> // সাসপেন্স শেষ
+  ); // রিটার্ন শেষ
+} // কম্পোনেন্ট শেষ

@@ -24,3 +24,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+@keyframes fadeIn { /* ফেড ইন অ্যানিমেশন কীফ্রেম */
+  from { opacity: 0; } /* শুরু হবে ০ অপাসিটি দিয়ে */
+  to { opacity: 1; } /* শেষ হবে ১ অপাসিটি দিয়ে */
+} /* কীফ্রেম শেষ */
+@keyframes scaleIn { /* স্কেল ইন অ্যানিমেশন কীফ্রেম */
+  from { transform: scale(0.95); opacity: 0; } /* শুরু হবে ছোট স্কেল এবং ০ অপাসিটি দিয়ে */
+  to { transform: scale(1); opacity: 1; } /* শেষ হবে পূর্ণ স্কেল এবং ১ অপাসিটি দিয়ে */
+} /* কীফ্রেম শেষ */
+.animate-fadeIn { /* ফেড ইন ক্লাস */
+  animation: fadeIn 0.2s ease-out forwards; /* অ্যানিমেশন কনফিগারেশন */
+} /* ক্লাস শেষ */
+.animate-scaleIn { /* স্কেল ইন ক্লাস */
+  animation: scaleIn 0.2s ease-out forwards; /* অ্যানিমেশন কনফিগারেশন */
+} /* ক্লাস শেষ */

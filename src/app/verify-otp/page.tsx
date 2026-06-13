@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react"; // রিঅ্যাক্ট স্টেট, ইফেক্ট এবং সাসপেন্স আমদানী করা হচ্ছে
+import { useRouter, useSearchParams } from "next/navigation"; // নেভিগেশন হুকসমূহ আমদানী করা হচ্ছে
 import api from "@/lib/api";
 
-export default function VerifyOtpPage() {
+function VerifyOtpContent() { // ওটিপি ভেরিফিকেশনের মূল কন্টেন্ট ফাংশন শুরু
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -115,5 +115,12 @@ export default function VerifyOtpPage() {
         </form>
       </div>
     </div>
-  );
-}
+  ); // মূল লেআউট রিটার্ন শেষ
+} // কন্টেন্ট ফাংশন শেষ
+export default function VerifyOtpPage() { // মূল ডিফল্ট পেজ কম্পোনেন্ট
+  return ( // রিটার্ন ভিউ
+    <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">Loading verification interface...</div>}> // ওটিপি স্ক্রিনের জন্য সাসপেন্স বাউন্ডারি
+      <VerifyOtpContent /> // কন্টেন্ট কম্পোনেন্ট রেন্ডার
+    </Suspense> // সাসপেন্স শেষ
+  ); // রিটার্ন শেষ
+} // কম্পোনেন্ট শেষ

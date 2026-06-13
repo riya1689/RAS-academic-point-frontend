@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"; // রিঅ্যাক্ট হুকসমূহ আমদানী করা হচ্ছে
 import { useRouter, usePathname } from "next/navigation"; // নেক্সট জেএস নেভিগেশন হুক আমদানী
 import { Toaster } from "react-hot-toast"; // টোস্ট নোটিফিকেশন প্রোভাইডার আমদানী
-import { BookOpen, LogOut, User as UserIcon, Home, Menu, X } from "lucide-react"; // লুসিড আইকনসমূহ আমদানী করা হচ্ছে
+import { BookOpen, LogOut, User as UserIcon, Home, Menu, X, HelpCircle } from "lucide-react"; // লুসিড আইকনসমূহ আমদানী করা হচ্ছে
 export default function DashboardLayout({ children }: { children: React.ReactNode }) { // লেআউট কম্পোনেন্টের মূল ডিক্লারেশন
   const router = useRouter(); // রাউটার ইনস্ট্যান্স তৈরি করা হচ্ছে
   const pathname = usePathname(); // বর্তমান ইউআরএল পাথ জানার জন্য পাথনেম হুক
@@ -54,9 +54,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <p className="text-xs text-slate-400 mt-1">Education Portal</p> // সাবটাইটেল
         </div> // লোগো ব্লক শেষ
         <nav className="flex-1 space-y-2"> // নেভিগেশন লিংক সমূহের তালিকা
-          <button onClick={() => { setIsSidebarOpen(false); router.push("/dashboard"); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-150 ${pathname.includes("/dashboard/teacher") || pathname.includes("/dashboard/student") ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "hover:bg-slate-800/50 text-slate-400"}`}> // ড্যাশবোর্ড হোম লিংক বাটন
+          <button onClick={() => { setIsSidebarOpen(false); router.push("/dashboard"); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-150 ${pathname.includes("/dashboard/teacher") || pathname.includes("/dashboard/student") || pathname.includes("/dashboard/guardian") ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "hover:bg-slate-800/50 text-slate-400"}`}> // ড্যাশবোর্ড হোম লিংক বাটন
             <Home size={20} /> // হোম আইকন
             <span>Dashboard</span> // হোম লেখা
+          </button> // বাটন শেষ
+          <button onClick={() => { setIsSidebarOpen(false); router.push("/dashboard/support"); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-150 ${pathname === "/dashboard/support" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "hover:bg-slate-800/50 text-slate-400"}`}> // সাপোর্ট সেশন লিংক বাটন
+            <HelpCircle size={20} /> // হেল্প আইকন
+            <span>Support Sessions</span> // সাপোর্ট টেক্সট
           </button> // বাটন শেষ
         </nav> // নেভিগেশন শেষ
         <div className="mt-auto pt-6 border-t border-slate-800/80 flex flex-col space-y-4"> // নিচের দিকের প্রোফাইল ও লগআউট
