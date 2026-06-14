@@ -23,6 +23,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           router.push("/dashboard/student"); // ছাত্র ড্যাশবোর্ড পেজে রিডিরেক্ট
         } else if (parsedUser.role === "GUARDIAN") { // অভিভাবকের ক্ষেত্রে অভিভাবক ড্যাশবোর্ডে পাঠানো হচ্ছে
           router.push("/dashboard/guardian"); // অভিভাবক ড্যাশবোর্ড পেজে রিডিরেক্ট
+        } else if (parsedUser.role === "ADMIN") { // এডমিন এর ক্ষেত্রে এডমিন ড্যাশবোর্ডে পাঠানো হচ্ছে
+          router.push("/dashboard/admin"); // এডমিন ড্যাশবোর্ড পেজে রিডিরেক্ট
         } // রোল চেকিং ব্লক শেষ
       } // বেস পাথ চেকিং শেষ
     } // কন্ডিশনাল চেকিং শেষ
