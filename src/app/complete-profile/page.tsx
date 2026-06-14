@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react"; // রিঅ্যাক্ট স্টেট, ইফেক্ট এবং সাসপেন্স আমদানী করা হচ্ছে
-import { useRouter, useSearchParams } from "next/navigation"; // নেভিগেশন হুকসমূহ আমদানী করা হচ্ছে
+import { useState, useEffect, Suspense } from "react"; 
+import { useRouter, useSearchParams } from "next/navigation"; 
 import api from "@/lib/api";
 
-function CompleteProfileContent() { // প্রোফাইল সম্পন্নের মূল কন্টেন্ট ফাংশন শুরু
+function CompleteProfileContent() { 
   const router = useRouter();
   const searchParams = useSearchParams();
   const [userId, setUserId] = useState("");
