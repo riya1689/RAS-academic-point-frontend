@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"; // রিঅ্যাক্ট হুকসমূহ আমদানী করা হচ্ছে
 import { useRouter, usePathname } from "next/navigation"; // নেক্সট জেএস নেভিগেশন হুক আমদানী
 import { Toaster } from "react-hot-toast"; // টোস্ট নোটিফিকেশন প্রোভাইডার আমদানী
-import { BookOpen, LogOut, User as UserIcon, Home, Menu, X, HelpCircle } from "lucide-react"; // লুসিড আইকনসমূহ আমদানী করা হচ্ছে
+import { BookOpen, LogOut, User as UserIcon, Home, Menu, X, HelpCircle, FileText, Trophy } from "lucide-react"; // লুসিড আইকনসমূহ আমদানী করা হচ্ছে
 export default function DashboardLayout({ children }: { children: React.ReactNode }) { // লেআউট কম্পোনেন্টের মূল ডিক্লারেশন
   const router = useRouter(); // রাউটার ইনস্ট্যান্স তৈরি করা হচ্ছে
   const pathname = usePathname(); // বর্তমান ইউআরএল পাথ জানার জন্য পাথনেম হুক
@@ -64,6 +64,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <HelpCircle size={20} /> // হেল্প আইকন
             <span>Support Sessions</span> // সাপোর্ট টেক্সট
           </button> // বাটন শেষ
+          <button onClick={() => { setIsSidebarOpen(false); router.push("/dashboard/results"); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-150 ${pathname === "/dashboard/results" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "hover:bg-slate-800/50 text-slate-400"}`}>
+            <FileText size={20} />
+            <span>Exam Results</span>
+          </button>
+          <button onClick={() => { setIsSidebarOpen(false); router.push("/dashboard/leaderboard"); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-150 ${pathname === "/dashboard/leaderboard" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "hover:bg-slate-800/50 text-slate-400"}`}>
+            <Trophy size={20} />
+            <span>Leaderboard</span>
+          </button>
         </nav> // নেভিগেশন শেষ
         <div className="mt-auto pt-6 border-t border-slate-800/80 flex flex-col space-y-4"> // নিচের দিকের প্রোফাইল ও লগআউট
           <div className="flex items-center space-x-3 p-2 bg-slate-800/30 rounded-xl border border-slate-800/50"> // ইউজারের সংক্ষিপ্ত প্রোফাইল ভিউ
