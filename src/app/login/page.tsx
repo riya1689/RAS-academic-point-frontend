@@ -42,8 +42,8 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href =
-      "http://localhost:5000/api/auth/signin/google";
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "https://ras-ems-backend.vercel.app/api";
+    window.location.href = `${backendUrl}/auth/signin/google`;
   };
 
   return (
