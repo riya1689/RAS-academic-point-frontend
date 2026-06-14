@@ -9,7 +9,6 @@ export default function TeacherSignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [teacherId, setTeacherId] = useState("");
   const [department, setDepartment] = useState("");
   const [qualification, setQualification] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,7 +24,6 @@ export default function TeacherSignupPage() {
         email,
         password,
         name,
-        teacherId,
         department,
         qualification,
       });
@@ -81,17 +79,6 @@ export default function TeacherSignupPage() {
               onChange={(e) => setName(e.target.value)}
               className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
               placeholder="Dr. Muhammad Jafar"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-xs uppercase font-bold text-gray-300 mb-1">Teacher ID</label>
-            <input 
-              type="text" 
-              value={teacherId}
-              onChange={(e) => setTeacherId(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
-              placeholder="T-2026-001"
               required
             />
           </div>

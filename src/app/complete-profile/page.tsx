@@ -112,10 +112,6 @@ function CompleteProfileContent() { // প্রোফাইল সম্পন�
           {role === "TEACHER" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs uppercase font-bold text-gray-300 mb-1">Teacher ID (Teacher ID)</label>
-                <input name="teacherId" type="text" onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white" required />
-              </div>
-              <div>
                 <label className="block text-xs uppercase font-bold text-gray-300 mb-1">Department (Department)</label>
                 <input name="department" type="text" onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white" required />
               </div>
