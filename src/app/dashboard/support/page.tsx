@@ -26,6 +26,7 @@ export default function SupportSessionsPage() {
 
   const [sessionDate, setSessionDate] = useState(new Date().toISOString().split("T")[0]);
   const [sessionTime, setSessionTime] = useState("09:00");
+  const [sessionEndTime, setSessionEndTime] = useState("11:00");
   const [meetLink, setMeetLink] = useState("");
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -45,6 +46,10 @@ export default function SupportSessionsPage() {
 
   const isSessionFuture = activeSession 
     ? (new Date(activeSession.startTime) > currentTime) 
+    : false;
+
+  const isSessionEnded = activeSession 
+    ? (currentTime > new Date(activeSession.endTime)) 
     : false;
 
   useEffect(() => {
@@ -141,13 +146,24 @@ export default function SupportSessionsPage() {
       setSubmitting(true);
 
       const start = new Date(`${sessionDate}T${sessionTime}`);
-      const end = new Date(start.getTime() + 2 * 60 * 60 * 1000); // 2 hours
+      const end = new Date(`${sessionDate}T${sessionEndTime}`);
+      
+      // If end time is earlier than start time, assume it ends the following day
+      if (end < start) {
+        end.setDate(end.getDate() + 1);
+      }
 
-      const [hours, minutes] = sessionTime.split(":");
-      const h = parseInt(hours, 10);
-      const ampm = h >= 12 ? "PM" : "AM";
-      const formattedHours = h % 12 || 12;
-      const formattedTimeStr = `${String(formattedHours).padStart(2, "0")}:${minutes} ${ampm}`;
+      const formatTo12Hour = (timeStr: string) => {
+        const [hours, minutes] = timeStr.split(":");
+        const h = parseInt(hours, 10);
+        const ampm = h >= 12 ? "PM" : "AM";
+        const formattedHours = h % 12 || 12;
+        return `${String(formattedHours).padStart(2, "0")}:${minutes} ${ampm}`;
+      };
+
+      const formattedStart = formatTo12Hour(sessionTime);
+      const formattedEnd = formatTo12Hour(sessionEndTime);
+      const formattedTimeStr = `${formattedStart} - ${formattedEnd}`;
 
       const res = await createSupportSession(
         sessionDate,
@@ -276,10 +292,18 @@ export default function SupportSessionsPage() {
 
                 {role === "STUDENT" ? (
                   <div className="space-y-6">
-                    {isSessionFuture ? (
+                    {isSessionEnded ? (
+                      <div className="p-8 bg-slate-950/45 border border-dashed border-rose-950 rounded-xl text-center space-y-4 animate-fadeIn">
+                        <Clock className="mx-auto text-rose-500" size={40} />
+                        <h4 className="text-lg font-bold text-slate-300">Support Session Ended</h4>
+                        <p className="text-slate-500 text-sm max-w-sm mx-auto">
+                          This support session has ended. No new tickets can be submitted, and you can no longer join.
+                        </p>
+                      </div>
+                    ) : isSessionFuture ? (
                       <div className="p-8 bg-slate-950/45 border border-dashed border-slate-800 rounded-xl text-center space-y-4 animate-fadeIn">
                         <Clock className="mx-auto text-amber-500 animate-pulse" size={40} />
-                        <h4 className="text-lg font-bold text-slate-350">Support Session Scheduled</h4>
+                        <h4 className="text-lg font-bold text-slate-355">Support Session Scheduled</h4>
                         <p className="text-slate-400 text-sm max-w-md mx-auto">
                           No support session available. Support session will start {activeSession.time}.
                         </p>
@@ -330,6 +354,13 @@ export default function SupportSessionsPage() {
                   </div>
                 ) : (
                   <div className="space-y-4">
+                    {isSessionEnded && (
+                      <div className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-xl text-center space-y-2 mb-4 animate-pulse">
+                        <p className="text-sm text-rose-400 font-bold flex items-center justify-center">
+                          ⚠️ Session time has ended! Please wrap up, resolve remaining tickets, and finish.
+                        </p>
+                      </div>
+                    )}
                     <h4 className="text-lg font-bold text-slate-300 flex items-center">
                       <Clock className="mr-2 text-emerald-400" size={18} />
                       <span>Current Student Queue ({queue.length})</span>
@@ -429,6 +460,10 @@ export default function SupportSessionsPage() {
               <div>
                 <label className="block text-slate-300 text-sm font-semibold mb-2">Start Time</label>
                 <input type="time" value={sessionTime} onChange={(e) => setSessionTime(e.target.value)} className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/80 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 transition" required />
+              </div>
+              <div>
+                <label className="block text-slate-300 text-sm font-semibold mb-2">End Time</label>
+                <input type="time" value={sessionEndTime} onChange={(e) => setSessionEndTime(e.target.value)} className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/80 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 transition" required />
               </div>
               <div>
                 <label className="block text-slate-300 text-sm font-semibold mb-2">Google Meet Link (Optional)</label>
