@@ -242,7 +242,7 @@ export default function SupportSessionsPage() {
           <h3 className="text-xl font-bold text-slate-300">No Support Session Available Yet</h3>
           <p className="text-slate-500 text-sm max-w-md mx-auto">
             {role === "STUDENT" 
-              ? "Support sessions start daily at 09:00 AM. Please check back later when a teacher is online." 
+              ? "Please check back later when a teacher is online." 
               : "Create a support session to start taking questions from student queues."}
           </p>
           {role === "TEACHER" && (
