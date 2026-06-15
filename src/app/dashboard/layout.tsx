@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Toaster } from "react-hot-toast";
-import { BookOpen, LogOut, User as UserIcon, Home, Menu, X, HelpCircle, FileText, Trophy } from "lucide-react";
+import { BookOpen, LogOut, User as UserIcon, Home, Menu, X, HelpCircle, FileText, Trophy, Calendar } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -71,6 +71,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <HelpCircle size={20} />
             <span>Support Sessions</span>
           </button>
+          {(user?.role === "TEACHER" || user?.role === "STUDENT") && (
+            <button onClick={() => { setIsSidebarOpen(false); router.push(user.role === "TEACHER" ? "/dashboard/teacher/booking" : "/dashboard/student/booking"); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-150 ${pathname.includes("/booking") ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "hover:bg-slate-800/50 text-slate-400"}`}>
+              <Calendar size={20} />
+              <span>1-to-1 Sessions</span>
+            </button>
+          )}
           <button onClick={() => { setIsSidebarOpen(false); router.push("/dashboard/results"); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-150 ${pathname === "/dashboard/results" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "hover:bg-slate-800/50 text-slate-400"}`}>
             <FileText size={20} />
             <span>Exam Results</span>
