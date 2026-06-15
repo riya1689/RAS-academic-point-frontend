@@ -1,36 +1,35 @@
-"use client"; // ক্লায়েন্ট সাইড রেন্ডারিং নির্দেশ করছে
-import { useEffect, useState } from "react"; // রিঅ্যাক্ট হুকসমূহ আমদানী করা হচ্ছে
-import { toast } from "react-hot-toast"; // টোস্ট নোটিফিকেশন লাইব্রেরি আমদানী
-import { Plus, BookOpen, Calendar, CheckCircle2, XCircle, ArrowRight, User, CreditCard, DollarSign, Wallet } from "lucide-react"; // প্রয়োজনী লুসিড আইকনসমূহ আমদানী
-import { getStudentClassrooms, joinClassroom, getStudentAttendance } from "../../../lib/classroom.api"; // ক্লাসরুম এপিআই মেথডসমূহ আমদানী
-import { getTuitionLogs, createCheckoutSession } from "../../../lib/payment.api"; // টিউশন পেমেন্ট এপিআই
+"use client";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import { Plus, BookOpen, Calendar, CheckCircle2, XCircle, ArrowRight, User, CreditCard, DollarSign, Wallet } from "lucide-react";
+import { getStudentClassrooms, joinClassroom, getStudentAttendance } from "../../../lib/classroom.api";
+import { getTuitionLogs, createCheckoutSession } from "../../../lib/payment.api";
 
-export default function StudentDashboard() { // ছাত্র ড্যাশবোর্ড কম্পোনেন্টের মূল ডিক্লারেশন
-  const [activeTab, setActiveTab] = useState<"classroom" | "tuition">("classroom"); // অ্যাক্টিভ ট্যাব স্টেট
-  const [classrooms, setClassrooms] = useState<any[]>([]); // ছাত্রের যুক্ত হওয়া ক্লাসরুম তালিকা স্টেট
-  const [isLoading, setIsLoading] = useState(true); // ডাটা লোডিং স্টেট
-  const [isModalOpen, setIsModalOpen] = useState(false); // ক্লাস কোড দিয়ে যোগদানের মডাল স্টেট
-  const [classCode, setClassCode] = useState(""); // ক্লাস কোডের ইনপুট স্টেট
-  const [isSubmitting, setIsSubmitting] = useState(false); // সাবমিটিং লোডার স্টেট
-  const [selectedClassroom, setSelectedClassroom] = useState<any>(null); // বিস্তারিত উপস্থিতি দেখার জন্য নির্বাচিত ক্লাসরুম
-  const [attendanceData, setAttendanceData] = useState<any>(null); // নির্বাচিত ক্লাসের উপস্থিতি রেকর্ডের ডাটা স্টেট
-  const [loadingAttendance, setLoadingAttendance] = useState(false); // উপস্থিতি লোডিং স্টেট
+export default function StudentDashboard() {
+  const [activeTab, setActiveTab] = useState<"classroom" | "tuition">("classroom");
+  const [classrooms, setClassrooms] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [classCode, setClassCode] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedClassroom, setSelectedClassroom] = useState<any>(null);
+  const [attendanceData, setAttendanceData] = useState<any>(null);
+  const [loadingAttendance, setLoadingAttendance] = useState(false);
 
-  // Tuition specific states
   const [tuitionLogs, setTuitionLogs] = useState<any[]>([]);
   const [loadingTuition, setLoadingTuition] = useState(false);
   const [isPayingMonth, setIsPayingMonth] = useState<string | null>(null);
 
-  const fetchClassrooms = async () => { // ক্লাসরুমের ডাটা সংগ্রহের ফাংশন
-    try { // ট্রাই ব্লক শুরু
-      const data = await getStudentClassrooms(); // এপিআই কল করে যুক্ত ক্লাসের তালিকা আনা হচ্ছে
-      setClassrooms(data.classrooms || []); // স্টেট আপডেট
-    } catch (error: any) { // এরর ক্যাচ ব্লক
-      toast.error(error.response?.data?.message || "Failed to load classrooms"); // এরর টোস্ট বার্তা
-    } finally { // সবশেষে লোডিং অফ করা হচ্ছে
-      setIsLoading(false); // লোডিং সমাপ্ত
-    } // ট্রাই-ক্যাচ শেষ
-  }; // ফাংশন শেষ
+  const fetchClassrooms = async () => {
+    try {
+      const data = await getStudentClassrooms();
+      setClassrooms(data.classrooms || []);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to load classrooms");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const fetchTuitionLogs = async () => {
     try {
@@ -44,11 +43,10 @@ export default function StudentDashboard() { // ছাত্র ড্যাশ�
     }
   };
 
-  useEffect(() => { // ফার্স্ট রেন্ডার ইফেক্ট
+  useEffect(() => {
     fetchClassrooms();
     fetchTuitionLogs();
 
-    // Check Stripe checkout redirect results in URL
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       if (params.get("payment") === "success") {
@@ -64,37 +62,37 @@ export default function StudentDashboard() { // ছাত্র ড্যাশ�
     }
   }, []);
 
-  const handleJoinClassroom = async (e: React.FormEvent) => { // ক্লাসরুমে যোগদানের সাবমিট হ্যান্ডলার
-    e.preventDefault(); // ফরমের ডিফল্ট সাবমিশন বন্ধ
-    if (!classCode.trim()) { // যদি ইনপুট ফিল্ড ফাকা থাকে
-      return toast.error("Please enter a classroom code"); // এরর টোস্ট
-    } // If কন্ডিশন শেষ
-    try { // ট্রাই ব্লক
-      setIsSubmitting(true); // সাবমিটিং স্টেট সত্য করা হচ্ছে
-      await joinClassroom(classCode.toUpperCase()); // কোড আপারকেস করে যোগদানের জন্য এপিআই রিকোয়েস্ট পাঠানো হচ্ছে
-      toast.success("Successfully joined the classroom!"); // সফলতার টোস্ট
-      setClassCode(""); // ইনপুট বক্স খালি করা হচ্ছে
-      setIsModalOpen(false); // মডাল বন্ধ
-      fetchClassrooms(); // রিফ্রেশ করা হচ্ছে ক্লাসরুমের তালিকা
-    } catch (error: any) { // এরর ক্যাচ
-      toast.error(error.response?.data?.message || "Failed to join classroom"); // এরর টোস্ট প্রদর্শন
-    } finally { // লোডিং সমাপ্তি
-      setIsSubmitting(false); // সাবমিটিং স্টেট মিথ্যা করা হচ্ছে
-    } // ট্রাই-ক্যাচ সমাপ্তি
-  }; // ফাংশন শেষ
+  const handleJoinClassroom = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!classCode.trim()) {
+      return toast.error("Please enter a classroom code");
+    }
+    try {
+      setIsSubmitting(true);
+      await joinClassroom(classCode.toUpperCase());
+      toast.success("Successfully joined the classroom!");
+      setClassCode("");
+      setIsModalOpen(false);
+      fetchClassrooms();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to join classroom");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-  const handleViewAttendance = async (classroom: any) => { // উপস্থিতি রিপোর্ট দেখার ফাংশন
-    setSelectedClassroom(classroom); // নির্বাচিত ক্লাসরুম সেভ করা হচ্ছে
-    setLoadingAttendance(true); // উপস্থিতি ডাটা লোড স্টেট ট্রু করা হচ্ছে
-    try { // ট্রাই ব্লক
-      const data = await getStudentAttendance(classroom.id); // নির্দিষ্ট ক্লাসের নিজের উপস্থিতি রেকর্ড পাওয়ার এপিআই কল
-      setAttendanceData(data); // উপস্থিতি ডাটা সংরক্ষণ
-    } catch (error: any) { // এরর ক্যাচ
-      toast.error(error.response?.data?.message || "Failed to load attendance records"); // এরর নোটিফিকেশন
-    } finally { // সবশেষে লোড শেষ করা হচ্ছে
-      setLoadingAttendance(false); // উপস্থিতি লোডিং ফলস
-    } // ট্রাই-ক্যাচ সমাপ্তি
-  }; // ফাংশন শেষ
+  const handleViewAttendance = async (classroom: any) => {
+    setSelectedClassroom(classroom);
+    setLoadingAttendance(true);
+    try {
+      const data = await getStudentAttendance(classroom.id);
+      setAttendanceData(data);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to load attendance records");
+    } finally {
+      setLoadingAttendance(false);
+    }
+  };
 
   const handleCheckout = async (month: string, amount: number) => {
     try {
@@ -128,7 +126,6 @@ export default function StudentDashboard() { // ছাত্র ড্যাশ�
         </div>
       </div>
 
-      {/* Tabs navigation */}
       <div className="flex border-b border-slate-800">
         <button
           onClick={() => setActiveTab("classroom")}
@@ -258,7 +255,6 @@ export default function StudentDashboard() { // ছাত্র ড্যাশ�
           </div>
         </div>
       ) : (
-        /* Tuition portal view */
         <div className="space-y-6 animate-fadeIn">
           <div className="flex justify-between items-center">
             <h3 className="text-xl font-bold text-slate-300 flex items-center gap-2">
@@ -370,29 +366,29 @@ export default function StudentDashboard() { // ছাত্র ড্যাশ�
         </div>
       )}
 
-      {isModalOpen && ( // যোগদান মডাল
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn"> // ব্যাকড্রপ
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative overflow-hidden animate-scaleIn"> // বডি
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl"></div> // ডেকোরেটিভ গ্লো
-            <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Join Classroom</h3> // শিরোনাম
-            <p className="text-slate-400 text-sm mb-6">Enter the 6-character classroom code provided by your teacher to join.</p> // বিবরণী
-            <form onSubmit={handleJoinClassroom} className="space-y-6"> // ফরম শুরু
-              <div> // ইনপুট গ্রুপ
-                <label className="block text-slate-300 text-sm font-semibold mb-2">Classroom Code</label> // লেবেল
-                <input type="text" placeholder="e.g. AB12CD" maxLength={6} value={classCode} onChange={(e) => setClassCode(e.target.value)} className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/80 hover:border-slate-600 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 font-mono placeholder-slate-500 uppercase tracking-widest text-center text-lg transition duration-200" required disabled={isSubmitting} /> // ইনপুট বক্স
-              </div> // গ্রুপ শেষ
-              <div className="flex space-x-3"> // বাটন গ্রুপ
-                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-3 bg-slate-800/50 hover:bg-slate-800 text-slate-300 font-semibold rounded-xl border border-slate-700/80 transition duration-150 cursor-pointer" disabled={isSubmitting}> // বাতিল বাটন
-                  Cancel // বাতিল টেক্সট
-                </button> // বাটন শেষ
-                <button type="submit" className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl shadow-lg transition duration-200 cursor-pointer transform active:scale-95" disabled={isSubmitting}> // জয়েন বাটন
-                  {isSubmitting ? "Joining..." : "Join Class"} // বাটন টেক্সট
-                </button> // বাটন শেষ
-              </div> // বাটন গ্রুপ শেষ
-            </form> // ফরম শেষ
-          </div> // বডি শেষ
-        </div> // ব্যাকড্রপ শেষ
-      )} // কন্ডিশনাল শেষ
-    </div> // মেইন শেষ
-  ); // রিটার্ন শেষ
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative overflow-hidden animate-scaleIn">
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl"></div>
+            <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Join Classroom</h3>
+            <p className="text-slate-400 text-sm mb-6">Enter the 6-character classroom code provided by your teacher to join.</p>
+            <form onSubmit={handleJoinClassroom} className="space-y-6">
+              <div>
+                <label className="block text-slate-300 text-sm font-semibold mb-2">Classroom Code</label>
+                <input type="text" placeholder="e.g. AB12CD" maxLength={6} value={classCode} onChange={(e) => setClassCode(e.target.value)} className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/80 hover:border-slate-600 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 font-mono placeholder-slate-500 uppercase tracking-widest text-center text-lg transition duration-200" required disabled={isSubmitting} />
+              </div>
+              <div className="flex space-x-3">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-3 bg-slate-800/50 hover:bg-slate-800 text-slate-300 font-semibold rounded-xl border border-slate-700/80 transition duration-150 cursor-pointer" disabled={isSubmitting}>
+                  Cancel
+                </button>
+                <button type="submit" className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl shadow-lg transition duration-200 cursor-pointer transform active:scale-95" disabled={isSubmitting}>
+                  {isSubmitting ? "Joining..." : "Join Class"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

@@ -1,33 +1,33 @@
-"use client"; // ক্লায়েন্ট সাইড রেন্ডারিং নির্দেশ করছে
-import { useEffect, useState } from "react"; // রিঅ্যাক্ট হুকসমূহ আমদানী করা হচ্ছে
-import Link from "next/link"; // নেক্সট লিংক কম্পোনেন্ট আমদানী করা হচ্ছে
-import { toast } from "react-hot-toast"; // টোস্ট নোটিফিকেশন লাইব্রেরি আমদানী
-import { Plus, Copy, BookOpen, Users, ArrowRight, Wallet, CheckCircle2, Calendar, XCircle } from "lucide-react"; // প্রয়োজনী লুসিড আইকনসমূহ আমদানী
-import { createClassroom, getTeacherClassrooms } from "../../../lib/classroom.api"; // ক্লাসরুম এপিআই মেথডসমূহ আমদানী
-import { getSalaryLogs } from "../../../lib/payment.api"; // স্যালারি এপিআই মেথডসমূহ আমদানী
+"use client"; 
+import { useEffect, useState } from "react"; 
+import Link from "next/link"; 
+import { toast } from "react-hot-toast"; 
+import { Plus, Copy, BookOpen, Users, ArrowRight, Wallet, CheckCircle2, Calendar, XCircle } from "lucide-react"; 
+import { createClassroom, getTeacherClassrooms } from "../../../lib/classroom.api"; 
+import { getSalaryLogs } from "../../../lib/payment.api"; 
 
-export default function TeacherDashboard() { // শিক্ষক ড্যাশবোর্ড কম্পোনেন্টের মূল ডিক্লারেশন
-  const [activeTab, setActiveTab] = useState<"classroom" | "salary">("classroom"); // অ্যাক্টিভ ট্যাব স্টেট
-  const [classrooms, setClassrooms] = useState<any[]>([]); // ক্লাসরুম লিস্ট সংরক্ষণের স্টেট
-  const [isLoading, setIsLoading] = useState(true); // ডাটা লোডিং স্টেট
-  const [isModalOpen, setIsModalOpen] = useState(false); // নতুন ক্লাস তৈরির মডাল স্টেট
-  const [newClassTitle, setNewClassTitle] = useState(""); // নতুন ক্লাসের নামের ইনপুট স্টেট
-  const [isSubmitting, setIsSubmitting] = useState(false); // ক্লাস সাবমিট লোডিং স্টেট
+export default function TeacherDashboard() { 
+  const [activeTab, setActiveTab] = useState<"classroom" | "salary">("classroom"); 
+  const [classrooms, setClassrooms] = useState<any[]>([]); 
+  const [isLoading, setIsLoading] = useState(true); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [newClassTitle, setNewClassTitle] = useState(""); 
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   // Salary specific states
   const [salaryLogs, setSalaryLogs] = useState<any[]>([]);
   const [loadingSalary, setLoadingSalary] = useState(false);
 
-  const fetchClassrooms = async () => { // ক্লাসরুম ডাটাবেজ থেকে লোড করার অ্যাসিনক্রোনাস ফাংশন
-    try { // ট্রাই ব্লক শুরু
-      const data = await getTeacherClassrooms(); // এপিআই কল করে শিক্ষকের ক্লাসরুমের ডাটা আনা হচ্ছে
-      setClassrooms(data.classrooms || []); // স্টেট এ ক্লাসরুমের ডাটা সেট করা হচ্ছে
-    } catch (error: any) { // কোনো ত্রুটি হলে ক্যাচ ব্লকে আসবে
-      toast.error(error.response?.data?.message || "Failed to load classrooms"); // টোস্ট নোটিফিকেশনে এরর মেসেজ প্রদর্শন
-    } finally { // সবশেষে লোডিং স্টেট মিথ্যা করা হচ্ছে
-      setIsLoading(false); // লোডিং স্টেট ফলস
-    } // ট্রাই-ক্যাচ-ফাইনালি সমাপ্ত
-  }; // ফাংশন শেষ
+  const fetchClassrooms = async () => { 
+    try { 
+      const data = await getTeacherClassrooms(); 
+      setClassrooms(data.classrooms || []); 
+    } catch (error: any) { 
+      toast.error(error.response?.data?.message || "Failed to load classrooms"); 
+    } finally { 
+      setIsLoading(false); 
+    } 
+  }; 
 
   const fetchSalaryLogs = async () => {
     try {
@@ -41,34 +41,34 @@ export default function TeacherDashboard() { // শিক্ষক ড্যা�
     }
   };
 
-  useEffect(() => { // কম্পোনেন্ট মাউন্ট হলে রান হওয়া ইফেক্ট
-    fetchClassrooms(); // ক্লাসরুম লিস্ট লোড করা হচ্ছে
+  useEffect(() => { 
+    fetchClassrooms(); 
     fetchSalaryLogs();
-  }, []); // ডিপেন্ডেন্সি অ্যারে খালি রাখা হয়েছে
+  }, []); 
 
-  const handleCreateClassroom = async (e: React.FormEvent) => { // নতুন ক্লাসরুম সাবমিট হ্যান্ডলার
-    e.preventDefault(); // ফরমের ডিফল্ট অ্যাকশন বা সাবমিশন বন্ধ করা হচ্ছে
-    if (!newClassTitle.trim()) { // যদি ক্লাসের নাম ফাঁকা থাকে
-      return toast.error("Please enter a classroom title"); // এরর টোস্ট পাঠানো হচ্ছে
-    } // ইফ ব্লক শেষ
-    try { // ট্রাই ব্লক শুরু
-      setIsSubmitting(true); // সাবমিটিং স্টেট সত্য করা হচ্ছে
-      await createClassroom(newClassTitle); // এপিআই কলের মাধ্যমে নতুন ক্লাসরুম তৈরি করা হচ্ছে
-      toast.success("Classroom created successfully!"); // সফলতার টোস্ট বার্তা
-      setNewClassTitle(""); // ইনপুট বক্স খালি করা হচ্ছে
-      setIsModalOpen(false); // মডাল বন্ধ করা হচ্ছে
-      fetchClassrooms(); // ক্লাসরুমের তালিকা রিফ্রেশ করা হচ্ছে
-    } catch (error: any) { // এরর হ্যান্ডলিং ক্যাচ ব্লক
-      toast.error(error.response?.data?.message || "Failed to create classroom"); // এরর টোস্ট পাঠানো হচ্ছে
-    } finally { // সবশেষে লোডিং স্টেট আপডেট করা হচ্ছে
-      setIsSubmitting(false); // সাবমিটিং স্টেট মিথ্যা করা হচ্ছে
-    } // // ট্রাই-ক্যাচ ব্লক শেষ
-  }; // ক্রিয়েট ক্লাস ফাংশন শেষ
+  const handleCreateClassroom = async (e: React.FormEvent) => { 
+    e.preventDefault(); 
+    if (!newClassTitle.trim()) { 
+      return toast.error("Please enter a classroom title"); 
+    } 
+    try { 
+      setIsSubmitting(true); 
+      await createClassroom(newClassTitle); 
+      toast.success("Classroom created successfully!"); 
+      setNewClassTitle(""); 
+      setIsModalOpen(false); 
+      fetchClassrooms(); 
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to create classroom"); 
+    } finally { 
+      setIsSubmitting(false); 
+    }
+  }; 
 
-  const copyCode = (code: string) => { // ক্লাস কোড কপি করার হেল্পার ফাংশন
-    navigator.clipboard.writeText(code); // ব্রাউজারের ক্লিপবোর্ডে কপি করা হচ্ছে
-    toast.success(`Classroom code ${code} copied!`); // কপি সফল হবার নোটিফিকেশন প্রদর্শন
-  }; // কপি ফাংশন শেষ
+  const copyCode = (code: string) => { 
+    navigator.clipboard.writeText(code); 
+    toast.success(`Classroom code ${code} copied!`);
+  }; 
 
   return (
     <div className="space-y-8">
@@ -245,29 +245,29 @@ export default function TeacherDashboard() { // শিক্ষক ড্যা�
         </div>
       )}
 
-      {isModalOpen && ( // ক্লাস তৈরির মডাল ওপেন হলে
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn"> // মডাল ব্যাকড্রপ
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative overflow-hidden animate-scaleIn"> // mdal body
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl"></div> // ডেকোরেティブ গ্লো
-            <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Create Classroom</h3> // মডাল শিরোনাম
-            <p className="text-slate-400 text-sm mb-6">Enter a title to create your virtual workspace for students.</p> // নির্দেশনা
-            <form onSubmit={handleCreateClassroom} className="space-y-6"> // ফরম শুরু
-              <div> // ইনপুট গ্রুপ
-                <label className="block text-slate-300 text-sm font-semibold mb-2">Classroom Title</label> // লেবেল
-                <input type="text" placeholder="e.g. Physics - Class 10 (A)" value={newClassTitle} onChange={(e) => setNewClassTitle(e.target.value)} className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/80 hover:border-slate-600 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 placeholder-slate-500 transition duration-200" required disabled={isSubmitting} /> // ইনপুট বক্স
-              </div> // ইনপুট গ্রুপ শেষ
-              <div className="flex space-x-3"> // অ্যাকশন বাটন গ্রুপ
-                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-3 bg-slate-800/50 hover:bg-slate-800 text-slate-300 font-semibold rounded-xl border border-slate-700/80 transition duration-150 cursor-pointer" disabled={isSubmitting}> // বাতিল বাটন
-                  Cancel // বাতিল টেক্সট
-                </button> // বাটন শেষ
-                <button type="submit" className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl shadow-lg transition duration-200 cursor-pointer transform active:scale-95" disabled={isSubmitting}> // কনফার্ম বাটন
-                  {isSubmitting ? "Creating..." : "Create Class"} // সাবমিট টেক্সট
-                </button> // বাটন শেষ
-              </div> // অ্যাকশন গ্রুপ শেষ
-            </form> // ফরম শেষ
-          </div> // মডাল বডি শেষ
-        </div> // মডাল ব্যাকড্রপ শেষ
-      )} // মডাল কন্ডিশনাল রেন্ডার শেষ
-    </div> // মূল কন্টেইনার শেষ
-  ); // রেন্ডার শেষ
+      {isModalOpen && ( 
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn"> 
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative overflow-hidden animate-scaleIn"> 
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl"></div> 
+            <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Create Classroom</h3> 
+            <p className="text-slate-400 text-sm mb-6">Enter a title to create your virtual workspace for students.</p>
+            <form onSubmit={handleCreateClassroom} className="space-y-6"> 
+              <div>
+                <label className="block text-slate-300 text-sm font-semibold mb-2">Classroom Title</label> 
+                <input type="text" placeholder="e.g. Physics - Class 10 (A)" value={newClassTitle} onChange={(e) => setNewClassTitle(e.target.value)} className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/80 hover:border-slate-600 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 placeholder-slate-500 transition duration-200" required disabled={isSubmitting} /> 
+              </div> 
+              <div className="flex space-x-3"> 
+                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-3 bg-slate-800/50 hover:bg-slate-800 text-slate-300 font-semibold rounded-xl border border-slate-700/80 transition duration-150 cursor-pointer" disabled={isSubmitting}> 
+                  Cancel
+                </button> 
+                <button type="submit" className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl shadow-lg transition duration-200 cursor-pointer transform active:scale-95" disabled={isSubmitting}> 
+                  {isSubmitting ? "Creating..." : "Create Class"}
+                </button> 
+              </div>  
+            </form>   
+          </div>   
+        </div>  
+      )}  
+    </div>  
+  );  
 }
