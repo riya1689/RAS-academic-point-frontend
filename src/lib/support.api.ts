@@ -1,7 +1,7 @@
 import api from "./api";
 
-export const createSupportSession = async (date: string, time: string, meetLink?: string) => {
-  const response = await api.post("/support-sessions", { date, time, meetLink });
+export const createSupportSession = async (date: string, time: string, meetLink?: string, startTime?: string, endTime?: string) => {
+  const response = await api.post("/support-sessions", { date, time, meetLink, startTime, endTime });
   return response.data;
 };
 
