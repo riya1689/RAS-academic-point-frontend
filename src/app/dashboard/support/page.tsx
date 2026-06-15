@@ -25,10 +25,27 @@ export default function SupportSessionsPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const [sessionDate, setSessionDate] = useState(new Date().toISOString().split("T")[0]);
-  const [sessionTime, setSessionTime] = useState("09:00 AM");
+  const [sessionTime, setSessionTime] = useState("09:00");
   const [meetLink, setMeetLink] = useState("");
 
+  const [currentTime, setCurrentTime] = useState(new Date());
+
   const socket = getSocket();
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const isSessionActive = activeSession 
+    ? (new Date(activeSession.startTime) <= currentTime && new Date(activeSession.endTime) >= currentTime) 
+    : false;
+
+  const isSessionFuture = activeSession 
+    ? (new Date(activeSession.startTime) > currentTime) 
+    : false;
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -44,9 +61,19 @@ export default function SupportSessionsPage() {
     try {
       setLoading(true);
       const data = await getActiveSupportSessions();
-      setSessions(data.sessions || []);
-      if (data.sessions && data.sessions.length > 0) {
-        handleSelectSession(data.sessions[0]);
+      const fetchedSessions = data.sessions || [];
+      setSessions(fetchedSessions);
+      
+      if (fetchedSessions.length > 0) {
+        const now = new Date();
+        const active = fetchedSessions.find(
+          (s: any) => new Date(s.startTime) <= now && new Date(s.endTime) >= now
+        );
+        if (active) {
+          handleSelectSession(active);
+        } else {
+          handleSelectSession(fetchedSessions[0]);
+        }
       }
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to load support sessions");
@@ -112,7 +139,23 @@ export default function SupportSessionsPage() {
     e.preventDefault();
     try {
       setSubmitting(true);
-      const res = await createSupportSession(sessionDate, sessionTime, meetLink);
+
+      const start = new Date(`${sessionDate}T${sessionTime}`);
+      const end = new Date(start.getTime() + 2 * 60 * 60 * 1000); // 2 hours
+
+      const [hours, minutes] = sessionTime.split(":");
+      const h = parseInt(hours, 10);
+      const ampm = h >= 12 ? "PM" : "AM";
+      const formattedHours = h % 12 || 12;
+      const formattedTimeStr = `${String(formattedHours).padStart(2, "0")}:${minutes} ${ampm}`;
+
+      const res = await createSupportSession(
+        sessionDate,
+        formattedTimeStr,
+        meetLink,
+        start.toISOString(),
+        end.toISOString()
+      );
       toast.success("Support session created successfully!");
       setIsModalOpen(false);
       setMeetLink("");
@@ -223,8 +266,8 @@ export default function SupportSessionsPage() {
                       <span>Started at {activeSession.time} - Hosted by {activeSession.teacher?.user?.name || "Teacher"}</span>
                     </p>
                   </div>
-                  {activeSession.meetLink && (
-                    <a href={activeSession.meetLink} target="_blank" rel="noreferrer" className="flex items-center space-x-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-xl text-sm font-semibold transition">
+                  {isSessionActive && activeSession.meetLink && (
+                    <a href={activeSession.meetLink} target="_blank" rel="noreferrer" className="flex items-center space-x-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-xl text-sm font-semibold transition animate-fadeIn">
                       <Video size={16} />
                       <span>Join Meet Link</span>
                     </a>
@@ -233,7 +276,15 @@ export default function SupportSessionsPage() {
 
                 {role === "STUDENT" ? (
                   <div className="space-y-6">
-                    {myTicket ? (
+                    {isSessionFuture ? (
+                      <div className="p-8 bg-slate-950/45 border border-dashed border-slate-800 rounded-xl text-center space-y-4 animate-fadeIn">
+                        <Clock className="mx-auto text-amber-500 animate-pulse" size={40} />
+                        <h4 className="text-lg font-bold text-slate-350">Support Session Scheduled</h4>
+                        <p className="text-slate-400 text-sm max-w-md mx-auto">
+                          No support session available. Support session will start {activeSession.time}.
+                        </p>
+                      </div>
+                    ) : myTicket ? (
                       <div className="p-6 bg-slate-950/60 border border-emerald-500/30 rounded-xl space-y-4 shadow-inner">
                         <div className="flex justify-between items-center">
                           <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wider">Your Ticket Status</span>
@@ -327,20 +378,37 @@ export default function SupportSessionsPage() {
 
           <div className="space-y-6">
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
-              <h3 className="text-lg font-bold text-slate-200">Active Sessions Today</h3>
+              <h3 className="text-lg font-bold text-slate-200">Today's Support Sessions</h3>
               <div className="space-y-3">
-                {sessions.map((s) => (
-                  <div key={s.id} onClick={() => handleSelectSession(s)} className={`p-4 rounded-xl border transition cursor-pointer flex justify-between items-center ${activeSession?.id === s.id ? "bg-emerald-500/10 border-emerald-500/30" : "bg-slate-950/30 border-slate-850 hover:border-slate-700"}`}>
-                    <div className="space-y-1">
-                      <span className="text-sm font-bold text-slate-300 block">Support with {s.teacher?.user?.name || "Teacher"}</span>
-                      <span className="text-xs text-slate-500 flex items-center">
-                        <Clock size={12} className="mr-1 text-emerald-500" />
-                        <span>{s.time}</span>
-                      </span>
+                {sessions.map((s) => {
+                  const sStart = new Date(s.startTime);
+                  const sEnd = new Date(s.endTime);
+                  const sActive = sStart <= currentTime && sEnd >= currentTime;
+
+                  return (
+                    <div key={s.id} onClick={() => handleSelectSession(s)} className={`p-4 rounded-xl border transition cursor-pointer flex justify-between items-center ${activeSession?.id === s.id ? "bg-emerald-500/10 border-emerald-500/30" : "bg-slate-950/30 border-slate-850 hover:border-slate-700"}`}>
+                      <div className="space-y-1 w-full">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-bold text-slate-300 block">Support with {s.teacher?.user?.name || "Teacher"}</span>
+                          {sActive ? (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/20">
+                              Active
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/20">
+                              Upcoming
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-xs text-slate-500 flex items-center">
+                          <Clock size={12} className="mr-1 text-emerald-500" />
+                          <span>{s.time}</span>
+                        </span>
+                      </div>
+                      <ArrowRight size={14} className="text-emerald-400 ml-2 flex-shrink-0" />
                     </div>
-                    <ArrowRight size={14} className="text-emerald-400" />
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -360,7 +428,7 @@ export default function SupportSessionsPage() {
               </div>
               <div>
                 <label className="block text-slate-300 text-sm font-semibold mb-2">Start Time</label>
-                <input type="text" placeholder="e.g. 09:00 AM" value={sessionTime} onChange={(e) => setSessionTime(e.target.value)} className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/80 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 transition" required />
+                <input type="time" value={sessionTime} onChange={(e) => setSessionTime(e.target.value)} className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/80 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 transition" required />
               </div>
               <div>
                 <label className="block text-slate-300 text-sm font-semibold mb-2">Google Meet Link (Optional)</label>
