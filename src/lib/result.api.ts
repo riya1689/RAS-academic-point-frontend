@@ -20,6 +20,16 @@ export interface ResultRecord {
   practicalPassMark: number | null;
   result: "PASS" | "FAIL";
   exam?: Exam;
+  student?: {
+    id: string;
+    class: string;
+    roll: string;
+    schoolName: string;
+    user: {
+      name: string;
+      email: string;
+    };
+  };
 }
 
 export interface LeaderboardEntry {

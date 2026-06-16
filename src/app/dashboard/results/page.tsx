@@ -399,7 +399,26 @@ export default function ExamResultsPage() {
                   Select a student and exam to load their transcript.
                 </div>
               ) : (
-                <div className="bg-slate-900/30 border border-slate-800 rounded-2xl overflow-hidden backdrop-blur-md">
+                <>
+                  {results[0]?.student && (
+                    <div className="bg-slate-900/50 border border-slate-800 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 backdrop-blur-sm mb-4 animate-fadeIn">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
+                          <User size={22} />
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-bold text-slate-200">{results[0].student.user.name}</h4>
+                          <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Student Profile Card</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-slate-400">
+                        <div>ID: <span className="font-mono text-emerald-400">{results[0].student.id}</span></div>
+                        <div>Class: <span className="font-mono text-emerald-400">{results[0].student.class}</span></div>
+                        <div>Roll: <span className="font-mono text-emerald-400">{results[0].student.roll}</span></div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="bg-slate-900/30 border border-slate-800 rounded-2xl overflow-hidden backdrop-blur-md">
                   <div className="overflow-x-auto">
                     {(() => {
                       const hasPractical = results.some(r => r.practicalMark !== null && r.practicalMark !== undefined);
@@ -479,6 +498,7 @@ export default function ExamResultsPage() {
                     })()}
                   </div>
                 </div>
+                </>
               )}
             </div>
           )}
@@ -753,7 +773,26 @@ export default function ExamResultsPage() {
               <p className="text-slate-500 text-sm mt-1">No exam result records have been uploaded for this exam session yet.</p>
             </div>
           ) : (
-            <div className="bg-slate-900/30 border border-slate-800 rounded-2xl overflow-hidden backdrop-blur-md">
+            <>
+              {results[0]?.student && (
+                <div className="bg-slate-900/50 border border-slate-800 p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 backdrop-blur-sm mb-4 animate-fadeIn">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
+                      <User size={22} />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-bold text-slate-200">{results[0].student.user.name}</h4>
+                      <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Student Profile Card</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs font-semibold text-slate-400">
+                    <div>ID: <span className="font-mono text-emerald-400">{results[0].student.id}</span></div>
+                    <div>Class: <span className="font-mono text-emerald-400">{results[0].student.class}</span></div>
+                    <div>Roll: <span className="font-mono text-emerald-400">{results[0].student.roll}</span></div>
+                  </div>
+                </div>
+              )}
+              <div className="bg-slate-900/30 border border-slate-800 rounded-2xl overflow-hidden backdrop-blur-md">
               <div className="overflow-x-auto">
                 {(() => {
                   const hasPractical = results.some(r => r.practicalMark !== null && r.practicalMark !== undefined);
@@ -813,6 +852,7 @@ export default function ExamResultsPage() {
                 })()}
               </div>
             </div>
+            </>
           )}
         </div>
       )}
