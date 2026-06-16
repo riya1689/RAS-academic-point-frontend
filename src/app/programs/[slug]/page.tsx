@@ -166,8 +166,12 @@ export default function ProgramDetailsPage() {
       {/* Dynamic Header */}
       <header className="sticky top-0 z-40 backdrop-blur-md border-b bg-bg-surface/80 border-border-main">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="p-2.5 bg-brand-primary/10 rounded-xl text-brand-primary dark:text-brand-secondary font-extrabold text-xl shadow-lg border border-brand-primary/20">🎓</span>
+          <Link href="/" className="flex items-center space-x-2.5">
+            <img 
+              src="/RAS Academic Logo.png" 
+              alt="RAS Academic Logo" 
+              className="h-10 w-auto object-contain dark:brightness-110" 
+            />
             <span className="text-lg md:text-xl font-black bg-gradient-to-r from-brand-primary dark:from-brand-secondary to-brand-secondary bg-clip-text text-transparent">
               {currentLang.logo}
             </span>
