@@ -335,6 +335,14 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDarkMode]);
+
   const startSlideTimer = () => {
     slideTimer.current = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
@@ -824,7 +832,7 @@ export default function Home() {
             <div className="px-6 pb-5 h-[60px] flex items-center gap-2">
               <button 
                 onClick={() => handleEnterPortal("GUARDIAN")} 
-                className="flex-1 text-center bg-slate-blue hover:bg-slate-blue-hover text-white font-bold py-2.5 rounded-lg text-xs transition cursor-pointer font-sans"
+                className="flex-1 text-center bg-brand-secondary hover:bg-brand-secondary-hover text-white font-bold py-2.5 rounded-lg text-xs transition cursor-pointer font-sans"
               >
                 {currentLang.enterPortal}
               </button>

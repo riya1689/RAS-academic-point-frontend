@@ -95,6 +95,14 @@ export default function ClassDetailsPage() {
     if (storedTheme === "false") setIsDarkMode(false);
   }, []);
 
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDarkMode]);
+
   const toggleLanguage = () => {
     const nextLang = !isBengali;
     setIsBengali(nextLang);
