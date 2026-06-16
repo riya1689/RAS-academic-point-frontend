@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Toaster } from "react-hot-toast";
-import { BookOpen, LogOut, User as UserIcon, Home, Menu, X, HelpCircle, FileText, Trophy, Calendar } from "lucide-react";
+import { BookOpen, LogOut, User as UserIcon, Home, Menu, X, HelpCircle, FileText, Trophy, Calendar, Globe } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -63,6 +63,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <p className="text-xs text-slate-400 mt-1">Education Portal</p>
         </div>
         <nav className="flex-1 space-y-2">
+          <button onClick={() => { setIsSidebarOpen(false); router.push("/"); }} className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800/50 text-slate-400 transition duration-150">
+            <Globe size={20} />
+            <span>Go to Homepage</span>
+          </button>
           <button onClick={() => { setIsSidebarOpen(false); router.push("/dashboard"); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-150 ${pathname.includes("/dashboard/teacher") || pathname.includes("/dashboard/student") || pathname.includes("/dashboard/guardian") ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "hover:bg-slate-800/50 text-slate-400"}`}>
             <Home size={20} />
             <span>Dashboard</span>

@@ -273,8 +273,8 @@ export default function Home() {
   const [user, setUser] = useState<any>(null);
 
   // Localization and theme states
-  const [isBengali, setIsBengali] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isBengali, setIsBengali] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Carousel slider state
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -320,10 +320,10 @@ export default function Home() {
     }
     
     const storedLang = localStorage.getItem("isBengali");
-    if (storedLang === "true") setIsBengali(true);
+    if (storedLang === "false") setIsBengali(false);
 
     const storedTheme = localStorage.getItem("isDarkMode");
-    if (storedTheme === "false") setIsDarkMode(false);
+    if (storedTheme === "true") setIsDarkMode(true);
 
     setLoading(false);
 
@@ -507,7 +507,7 @@ export default function Home() {
           <div className="flex-1 flex justify-start">
             <Link href="/" className="flex items-center space-x-2.5">
               <img 
-                src="/RAS_Academic-removebg-preview.png" 
+                src="/RAS Academic.png" 
                 alt="RAS Academic Logo" 
                 className="h-10 w-auto object-contain dark:brightness-110" 
               />

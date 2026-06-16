@@ -109,16 +109,16 @@ export default function ProgramDetailsPage() {
   const router = useRouter();
   const slug = params?.slug as string;
 
-  const [isBengali, setIsBengali] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isBengali, setIsBengali] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     // Read local storage preferences
     const storedLang = localStorage.getItem("isBengali");
-    if (storedLang === "true") setIsBengali(true);
+    if (storedLang === "false") setIsBengali(false);
 
     const storedTheme = localStorage.getItem("isDarkMode");
-    if (storedTheme === "false") setIsDarkMode(false);
+    if (storedTheme === "true") setIsDarkMode(true);
   }, []);
 
   useEffect(() => {
@@ -168,7 +168,7 @@ export default function ProgramDetailsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
           <Link href="/" className="flex items-center space-x-2.5">
             <img 
-              src="/RAS Academic Logo.png" 
+              src="/RAS Academic.png" 
               alt="RAS Academic Logo" 
               className="h-10 w-auto object-contain dark:brightness-110" 
             />
