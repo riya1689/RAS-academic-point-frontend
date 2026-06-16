@@ -1,40 +1,122 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-main: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-alt: #F1F5F9;
+  --bg-hover: #FAFAFA;
+  
+  --text-main: #111827;
+  --text-sec: #374151;
+  --text-mut: #6B7280;
+  
+  --border-main: #E5E7EB;
+  --border-alt: #D1D5DB;
+  
+  --brand-primary: #0F462D;
+  --brand-primary-hover: #145A3B;
+  --brand-secondary: #39A4D1;
+  --brand-secondary-hover: #228BB8;
+  --brand-accent: #DD323F;
+  --brand-footer: #0F462D;
+  
+  --slate-blue: #496571;
+  --slate-blue-hover: #3D545F;
+  --sage-green: #9DBCB4;
+  
+  --active-menu: #0F462D;
+  --hover-menu: #39A4D1;
+  
+  --background: #F8FAFC;
+  --foreground: #111827;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --bg-main: #0B1220;
+  --bg-surface: #111827;
+  --bg-alt: #1A2433;
+  --bg-hover: #233044;
+  
+  --text-main: #F9FAFB;
+  --text-sec: #E2E8F0;
+  --text-mut: #CBD5E1;
+  
+  --border-main: #334155;
+  --border-alt: #475569;
+  
+  --brand-primary: #0F462D;
+  --brand-primary-hover: #145A3B;
+  --brand-secondary: #39A4D1;
+  --brand-secondary-hover: #228BB8;
+  --brand-accent: #DD323F;
+  --brand-footer: #081A12;
+  
+  --slate-blue: #496571;
+  --slate-blue-hover: #3D545F;
+  --sage-green: #9DBCB4;
+  
+  --active-menu: #39A4D1;
+  --hover-menu: #9DBCB4;
+  
+  --background: #0B1220;
+  --foreground: #F9FAFB;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --color-bg-main: var(--bg-main);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-alt: var(--bg-alt);
+  --color-bg-hover: var(--bg-hover);
+  
+  --color-text-main: var(--text-main);
+  --color-text-sec: var(--text-sec);
+  --color-text-mut: var(--text-mut);
+  
+  --color-border-main: var(--border-main);
+  --color-border-alt: var(--border-alt);
+  
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-secondary-hover: var(--brand-secondary-hover);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-footer: var(--brand-footer);
+  
+  --color-slate-blue: var(--slate-blue);
+  --color-slate-blue-hover: var(--slate-blue-hover);
+  --color-sage-green: var(--sage-green);
+  
+  --color-active-menu: var(--active-menu);
+  --color-hover-menu: var(--hover-menu);
+  
+  --color-success: #16A34A;
+  --color-warning: #F59E0B;
+  --color-error: #DC2626;
+  --color-info: #39A4D1;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg-main);
+  color: var(--text-main);
   font-family: Arial, Helvetica, sans-serif;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-duration: 200ms;
 }
-@keyframes fadeIn { /* ফেড ইন অ্যানিমেশন কীফ্রেম */
-  from { opacity: 0; } /* শুরু হবে ০ অপাসিটি দিয়ে */
-  to { opacity: 1; } /* শেষ হবে ১ অপাসিটি দিয়ে */
-} /* কীফ্রেম শেষ */
-@keyframes scaleIn { /* স্কেল ইন অ্যানিমেশন কীফ্রেম */
-  from { transform: scale(0.95); opacity: 0; } /* শুরু হবে ছোট স্কেল এবং ০ অপাসিটি দিয়ে */
-  to { transform: scale(1); opacity: 1; } /* শেষ হবে পূর্ণ স্কেল এবং ১ অপাসিটি দিয়ে */
-} /* কীফ্রেম শেষ */
-.animate-fadeIn { /* ফেড ইন ক্লাস */
-  animation: fadeIn 0.2s ease-out forwards; /* অ্যানিমেশন কনফিগারেশন */
-} /* ক্লাস শেষ */
-.animate-scaleIn { /* স্কেল ইন ক্লাস */
-  animation: scaleIn 0.2s ease-out forwards; /* অ্যানিমেশন কনফিগারেশন */
-} /* ক্লাস শেষ */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.2s ease-out forwards;
+}
