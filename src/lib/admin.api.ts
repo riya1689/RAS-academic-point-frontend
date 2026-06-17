@@ -292,6 +292,22 @@ export async function updateAdminUser(id: string, data: any): Promise<any> {
   return response.data;
 }
 
+export async function createAdminUser(data: any): Promise<any> {
+  const response = await api.post("/admin/users", data);
+  return response.data;
+}
+
+export async function deleteAdminUser(id: string): Promise<any> {
+  const response = await api.delete(`/admin/users/${id}`);
+  return response.data;
+}
+
+export async function updateSupportTarget(target: number): Promise<any> {
+  const response = await api.put("/admin/support-sessions/target", { target });
+  return response.data;
+}
+
+
 // Re-exports from classrooms for convenience
 export async function getAdminClassrooms(): Promise<{ classrooms: AdminClassroom[] }> {
   const response = await api.get("/admin/classrooms");

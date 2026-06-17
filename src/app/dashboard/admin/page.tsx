@@ -12,10 +12,10 @@ import {
 
 // APIs
 import {
-  getAdminStats, getAdminUsers, updateAdminUser,
+  getAdminStats, getAdminUsers, updateAdminUser, createAdminUser, deleteAdminUser,
   getAdminStudents, createAdminStudent, updateAdminStudent, deleteAdminStudent,
   getAdminTeachers, createAdminTeacher, updateAdminTeacher, deleteAdminTeacher,
-  getAdminSupportSessions, createAdminSupportSession, cancelAdminSupportSession,
+  getAdminSupportSessions, createAdminSupportSession, cancelAdminSupportSession, updateSupportTarget,
   getAdminBookings, cancelAdminBooking,
   getFinanceDetails,
   getSatisfactionRatings,
@@ -87,6 +87,16 @@ function AdminDashboardContent() {
 
   const [isTuitionModalOpen, setIsTuitionModalOpen] = useState(false);
   const [isSalaryModalOpen, setIsSalaryModalOpen] = useState(false);
+
+  // Target Editing States
+  const [isEditingTarget, setIsEditingTarget] = useState(false);
+  const [targetInput, setTargetInput] = useState("");
+
+  // Add User States
+  const [isAddUserOpen, setIsAddUserOpen] = useState(false);
+  const [addUserForm, setAddUserForm] = useState({
+    name: "", email: "", password: "", role: "STUDENT" as any, status: "ACTIVE" as any
+  });
 
   // Forms
   const [studentForm, setStudentForm] = useState({
@@ -409,6 +419,49 @@ function AdminDashboardContent() {
     }
   };
 
+  const handleSaveTarget = async () => {
+    const val = Number(targetInput);
+    if (isNaN(val) || val <= 0) {
+      toast.error("Please enter a valid target number");
+      return;
+    }
+    try {
+      await updateSupportTarget(val);
+      setSupportStats(prev => prev ? { ...prev, target: val } : null);
+      setIsEditingTarget(false);
+      toast.success("Support target updated!");
+    } catch (err: any) {
+      toast.error("Failed to update support target");
+    }
+  };
+
+  const handleAddUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setIsSubmitting(true);
+      await createAdminUser(addUserForm);
+      toast.success("User created successfully!");
+      setIsAddUserOpen(false);
+      setAddUserForm({ name: "", email: "", password: "", role: "STUDENT", status: "ACTIVE" });
+      loadData();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to create user account");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    if (!confirm("Are you sure you want to delete this user? This action cannot be undone and will delete all linked profiles.")) return;
+    try {
+      await deleteAdminUser(userId);
+      toast.success("User account deleted successfully");
+      loadData();
+    } catch (error: any) {
+      toast.error("Failed to delete user");
+    }
+  };
+
   // Populate helper functions
   const triggerEditStudent = (student: AdminStudent) => {
     setSelectedStudent(student);
@@ -571,6 +624,15 @@ function AdminDashboardContent() {
               <span>Disburse Salary</span>
             </button>
           )}
+          {activeTab === "users" && (
+            <button
+              onClick={() => setIsAddUserOpen(true)}
+              className="flex items-center space-x-1.5 bg-gradient-to-r from-emerald-500 to-teal-650 hover:from-emerald-600 hover:to-teal-755 text-white font-bold px-4 py-2 rounded-xl transition duration-150 cursor-pointer text-xs"
+            >
+              <Plus size={14} />
+              <span>Add User</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -677,11 +739,11 @@ function AdminDashboardContent() {
             </div>
             <div className="bg-slate-900/40 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition duration-150">
               <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider block">Revenue</span>
-              <span className="text-3xl font-black text-emerald-400 font-mono mt-2">${stats.totalRevenue}</span>
+              <span className="text-3xl font-black text-emerald-400 font-mono mt-2">{stats.totalRevenue.toLocaleString()} BDT</span>
             </div>
             <div className="bg-slate-900/40 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition duration-150">
               <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider block">Due Salary</span>
-              <span className="text-3xl font-black text-rose-400 font-mono mt-2">${stats.dueSalary}</span>
+              <span className="text-3xl font-black text-rose-400 font-mono mt-2">{stats.dueSalary.toLocaleString()} BDT</span>
             </div>
           </div>
 
@@ -946,7 +1008,45 @@ function AdminDashboardContent() {
             <span className="text-slate-700">|</span>
             <span>Today: <strong className="text-blue-400 font-mono text-sm">{supportStats.today}</strong></span>
             <span className="text-slate-700">|</span>
-            <span>Target: <strong className="text-slate-250 font-mono text-sm">{supportStats.target}</strong></span>
+            <span className="flex items-center gap-1.5 normal-case">
+              <span>Target:</span>
+              {isEditingTarget ? (
+                <span className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    value={targetInput}
+                    onChange={(e) => setTargetInput(e.target.value)}
+                    className="w-16 px-1 py-0.5 bg-slate-950 border border-slate-700 rounded text-slate-200 text-xs font-mono focus:outline-none focus:border-emerald-500"
+                    autoFocus
+                  />
+                  <button
+                    onClick={handleSaveTarget}
+                    className="p-1 hover:text-emerald-400 text-slate-400 transition cursor-pointer"
+                  >
+                    <Check size={12} />
+                  </button>
+                  <button
+                    onClick={() => setIsEditingTarget(false)}
+                    className="p-1 hover:text-rose-455 text-slate-400 transition cursor-pointer"
+                  >
+                    <X size={12} />
+                  </button>
+                </span>
+              ) : (
+                <span className="flex items-center gap-1">
+                  <strong className="text-slate-250 font-mono text-sm">{supportStats.target}</strong>
+                  <button
+                    onClick={() => {
+                      setTargetInput(supportStats.target.toString());
+                      setIsEditingTarget(true);
+                    }}
+                    className="p-1 hover:text-emerald-450 text-slate-500 transition cursor-pointer"
+                  >
+                    <Edit2 size={10} />
+                  </button>
+                </span>
+              )}
+            </span>
           </div>
 
           <div className="bg-slate-900/30 border border-slate-800 rounded-2xl overflow-hidden backdrop-blur-md">
@@ -1132,12 +1232,20 @@ function AdminDashboardContent() {
                         </span>
                       </td>
                       <td className="p-4 text-right">
-                        <button
-                          onClick={() => triggerEditUser(ur)}
-                          className="p-1.5 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-emerald-400 rounded transition duration-150 cursor-pointer"
-                        >
-                          <Edit2 size={12} />
-                        </button>
+                        <div className="flex justify-end space-x-2">
+                          <button
+                            onClick={() => triggerEditUser(ur)}
+                            className="p-1.5 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-emerald-400 rounded transition duration-150 cursor-pointer"
+                          >
+                            <Edit2 size={12} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(ur.id)}
+                            className="p-1.5 bg-slate-800 hover:bg-rose-550/20 text-slate-450 hover:text-rose-400 rounded transition duration-150 cursor-pointer"
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -1155,19 +1263,19 @@ function AdminDashboardContent() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition">
               <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider block">Monthly Rev</span>
-              <span className="text-3xl font-black text-slate-100 font-mono mt-2">${finance.monthlyRev.toLocaleString()} BDT</span>
+              <span className="text-3xl font-black text-slate-100 font-mono mt-2">{finance.monthlyRev.toLocaleString()} BDT</span>
             </div>
             <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition">
               <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider block">Refunds</span>
-              <span className="text-3xl font-black text-rose-400 font-mono mt-2">${finance.refunds.toLocaleString()} BDT</span>
+              <span className="text-3xl font-black text-rose-400 font-mono mt-2">{finance.refunds.toLocaleString()} BDT</span>
             </div>
             <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition">
               <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider block">Net Profit</span>
-              <span className="text-3xl font-black text-emerald-400 font-mono mt-2">${finance.netProfit.toLocaleString()} BDT</span>
+              <span className="text-3xl font-black text-emerald-400 font-mono mt-2">{finance.netProfit.toLocaleString()} BDT</span>
             </div>
             <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition">
               <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider block">Extra curriculum</span>
-              <span className="text-3xl font-black text-blue-400 font-mono mt-2">${finance.extraCurriculum.toLocaleString()} BDT</span>
+              <span className="text-3xl font-black text-blue-400 font-mono mt-2">{finance.extraCurriculum.toLocaleString()} BDT</span>
             </div>
           </div>
 
@@ -1207,12 +1315,10 @@ function AdminDashboardContent() {
                     <th className="p-4">Target Class</th>
                     <th className="p-4">Total Students in Class</th>
                     <th className="p-4">Participated / Attended</th>
-                    <th className="p-4 text-center">Completion Ratio</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60 text-sm">
                   {examAttendanceStats.map((ex, idx) => {
-                    const ratio = ex.totalStudents > 0 ? Math.round((ex.attended / ex.totalStudents) * 100) : 0;
                     return (
                       <tr key={idx} className="hover:bg-slate-800/10 transition duration-150">
                         <td className="p-4 font-mono font-bold text-xs text-slate-550">EX{ex.examId.substring(0, 3).toUpperCase()}</td>
@@ -1220,14 +1326,6 @@ function AdminDashboardContent() {
                         <td className="p-4 text-slate-300 font-bold">Class {ex.class}</td>
                         <td className="p-4 font-mono text-slate-350">{ex.totalStudents} students</td>
                         <td className="p-4 font-mono text-emerald-400 font-semibold">{ex.attended} attended</td>
-                        <td className="p-4">
-                          <div className="flex items-center justify-center gap-2">
-                            <div className="flex-1 w-20 bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-850">
-                              <div style={{ width: `${ratio}%` }} className="bg-emerald-450 h-full rounded-full"></div>
-                            </div>
-                            <span className="font-mono text-xs font-bold text-slate-400">{ratio}%</span>
-                          </div>
-                        </td>
                       </tr>
                     );
                   })}
@@ -2078,6 +2176,103 @@ function AdminDashboardContent() {
         </div>
       )}
 
+      {/* ADD USER MODAL */}
+      {isAddUserOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-slate-900 border border-slate-850 rounded-3xl w-full max-w-md p-6 shadow-2xl relative overflow-hidden animate-scaleIn">
+            <button onClick={() => setIsAddUserOpen(false)} className="absolute right-4 top-4 p-2 text-slate-400 hover:text-slate-200 rounded-xl cursor-pointer">
+              <X size={18} />
+            </button>
+            <h3 className="text-xl font-black bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent mb-1 flex items-center gap-2">
+              <Shield className="text-emerald-400" size={20} />
+              <span>Add User Account</span>
+            </h3>
+            <p className="text-slate-455 text-[11px] mb-6">Create a generic user account and set their system authorization role.</p>
+
+            <form onSubmit={handleAddUser} className="space-y-4">
+              <div>
+                <label className="block text-slate-350 text-[10px] font-bold uppercase tracking-wider mb-1">Full Name</label>
+                <input
+                  type="text"
+                  value={addUserForm.name}
+                  onChange={(e) => setAddUserForm({ ...addUserForm, name: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-855 border border-slate-750 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 text-xs"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-350 text-[10px] font-bold uppercase tracking-wider mb-1">Email Address</label>
+                <input
+                  type="email"
+                  value={addUserForm.email}
+                  onChange={(e) => setAddUserForm({ ...addUserForm, email: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-855 border border-slate-750 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 text-xs font-mono"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-350 text-[10px] font-bold uppercase tracking-wider mb-1">Password</label>
+                <input
+                  type="password"
+                  value={addUserForm.password}
+                  onChange={(e) => setAddUserForm({ ...addUserForm, password: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-855 border border-slate-750 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 text-xs"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-355 text-[10px] font-bold uppercase tracking-wider mb-1">Authorized Role</label>
+                  <select
+                    value={addUserForm.role}
+                    onChange={(e) => setAddUserForm({ ...addUserForm, role: e.target.value as any })}
+                    className="w-full px-3 py-2 bg-slate-855 border border-slate-750 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 text-xs cursor-pointer font-bold"
+                  >
+                    <option value="STUDENT">Student</option>
+                    <option value="TEACHER">Teacher</option>
+                    <option value="GUARDIAN">Guardian</option>
+                    <option value="ADMIN">Admin</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-slate-355 text-[10px] font-bold uppercase tracking-wider mb-1">Account Permission</label>
+                  <select
+                    value={addUserForm.status}
+                    onChange={(e) => setAddUserForm({ ...addUserForm, status: e.target.value as any })}
+                    className="w-full px-3 py-2 bg-slate-855 border border-slate-750 focus:border-emerald-500 focus:outline-none rounded-xl text-slate-200 text-xs cursor-pointer font-bold"
+                  >
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                    <option value="SUSPENDED">Suspended / Frozen</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex space-x-2 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsAddUserOpen(false)}
+                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-750 text-slate-300 font-bold rounded-xl border border-slate-700 transition cursor-pointer text-xs"
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-650 hover:from-emerald-600 hover:to-teal-750 text-white font-bold rounded-xl shadow-lg transition cursor-pointer text-xs"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Creating..." : "Add User"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      
       {/* RECORD CASH TUITION MODAL */}
       {isTuitionModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
