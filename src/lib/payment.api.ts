@@ -36,6 +36,7 @@ export interface Teacher {
   teacherId: string;
   department: string;
   qualification: string;
+  subject: string;
   user: {
     name: string;
     email: string;

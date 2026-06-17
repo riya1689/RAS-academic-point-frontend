@@ -3,11 +3,23 @@ import api from "./api";
 export interface AdminStats {
   totalStudents: number;
   totalTeachers: number;
+  totalSupportSessions: number;
   totalClassrooms: number;
-  totalGuardians: number;
   totalRevenue: number;
-  totalPending: number;
-  totalSalariesPaid: number;
+  dueSalary: number;
+  activeStudents: number;
+  activeTeachers: number;
+}
+
+export interface AttendanceRateData {
+  classroom: string;
+  code: string;
+  rate: number;
+}
+
+export interface ResultSuccessData {
+  pass: number;
+  fail: number;
 }
 
 export interface AdminUser {
@@ -15,6 +27,7 @@ export interface AdminUser {
   name: string;
   email: string;
   role: "ADMIN" | "TEACHER" | "STUDENT" | "GUARDIAN";
+  status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
   emailVerified: boolean;
   createdAt: string;
 }
@@ -28,11 +41,15 @@ export interface AdminStudent {
   schoolName: string;
   phone: string;
   email: string | null;
+  year: string;
   role: string;
-  user?: {
+  attendanceRate: string;
+  user: {
     name: string;
     email: string;
     role: string;
+    status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
+    createdAt: string;
   };
 }
 
@@ -42,11 +59,17 @@ export interface AdminTeacher {
   teacherId: string;
   department: string;
   qualification: string;
+  subject: string;
+  rating: number;
+  salary: number;
+  dueSalary: number;
   role: string;
-  user?: {
+  user: {
     name: string;
     email: string;
     role: string;
+    status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
+    createdAt: string;
   };
 }
 
@@ -80,30 +103,109 @@ export interface ClassroomMember {
   };
 }
 
-// Stats API
-export async function getAdminStats(): Promise<{ stats: AdminStats }> {
+export interface SupportSession {
+  id: string;
+  teacherId: string;
+  date: string;
+  time: string;
+  meetLink: string;
+  subject: string;
+  status: "SCHEDULED" | "COMPLETED" | "CANCELLED";
+  duration: number;
+  totalJoinStudent: number;
+  teacher?: {
+    user?: {
+      name: string;
+    };
+  };
+}
+
+export interface SupportStats {
+  pending: number;
+  completed: number;
+  today: number;
+  target: number;
+}
+
+export interface OneToOneBooking {
+  id: string;
+  studentId: string;
+  slotId: string;
+  meetLink: string;
+  description: string;
+  status: "CONFIRMED" | "CANCELLED";
+  student?: {
+    user?: {
+      name: string;
+      email: string;
+    };
+  };
+  slot?: {
+    slotStart: string;
+    slotEnd: string;
+    teacher?: {
+      user?: {
+        name: string;
+        email: string;
+      };
+    };
+  };
+}
+
+export interface SatisfactionRating {
+  id: string;
+  class: string;
+  subject: string;
+  studentRate: number;
+  guardianRate: number;
+  avgRate: number;
+}
+
+export interface FinanceDetails {
+  monthlyRev: number;
+  refunds: number;
+  netProfit: number;
+  extraCurriculum: number;
+}
+
+export interface GrowthChartData {
+  month: string;
+  revenue: number;
+}
+
+export interface ExamAttendanceStat {
+  examId: string;
+  examName: string;
+  class: string;
+  totalStudents: number;
+  attended: number;
+}
+
+// 1. Get Stats and Chart Data
+export async function getAdminStats(): Promise<{
+  stats: AdminStats;
+  charts: {
+    attendanceRateChart: AttendanceRateData[];
+    resultSuccessChart: ResultSuccessData;
+  };
+  recentActivities: string[];
+}> {
   const response = await api.get("/admin/stats");
   return response.data;
 }
 
-// User role management API
-export async function getAdminUsers(): Promise<{ users: AdminUser[] }> {
-  const response = await api.get("/admin/users");
-  return response.data;
-}
-
-export async function updateUserRole(userId: string, role: string): Promise<any> {
-  const response = await api.put(`/admin/users/${userId}/role`, { role });
-  return response.data;
-}
-
-// Students Management APIs
+// 2. Student APIs
 export async function getAdminStudents(): Promise<{ students: AdminStudent[] }> {
   const response = await api.get("/admin/students");
   return response.data;
 }
 
-export async function updateAdminStudent(id: string, data: Partial<AdminStudent> & { name?: string; email?: string; role?: string }): Promise<any> {
+export async function createAdminStudent(data: any): Promise<any> {
+  const response = await api.post("/admin/students", data);
+  return response.data;
+}
+
+export async function updateAdminStudent(id: string, data: any): Promise<any> {
   const response = await api.put(`/admin/students/${id}`, data);
   return response.data;
 }
@@ -113,13 +215,18 @@ export async function deleteAdminStudent(id: string): Promise<any> {
   return response.data;
 }
 
-// Teachers Management APIs
+// 3. Teacher APIs
 export async function getAdminTeachers(): Promise<{ teachers: AdminTeacher[] }> {
   const response = await api.get("/admin/teachers");
   return response.data;
 }
 
-export async function updateAdminTeacher(id: string, data: Partial<AdminTeacher> & { name?: string; email?: string; role?: string }): Promise<any> {
+export async function createAdminTeacher(data: any): Promise<any> {
+  const response = await api.post("/admin/teachers", data);
+  return response.data;
+}
+
+export async function updateAdminTeacher(id: string, data: any): Promise<any> {
   const response = await api.put(`/admin/teachers/${id}`, data);
   return response.data;
 }
@@ -129,7 +236,63 @@ export async function deleteAdminTeacher(id: string): Promise<any> {
   return response.data;
 }
 
-// Classrooms Management APIs
+// 4. Support Sessions APIs
+export async function getAdminSupportSessions(): Promise<{ sessions: SupportSession[]; stats: SupportStats }> {
+  const response = await api.get("/admin/support-sessions");
+  return response.data;
+}
+
+export async function createAdminSupportSession(data: any): Promise<{ session: SupportSession }> {
+  const response = await api.post("/admin/support-sessions", data);
+  return response.data;
+}
+
+export async function cancelAdminSupportSession(id: string): Promise<any> {
+  const response = await api.put(`/admin/support-sessions/${id}/cancel`);
+  return response.data;
+}
+
+// 5. 1-to-1 Support Bookings APIs
+export async function getAdminBookings(): Promise<{ bookings: OneToOneBooking[] }> {
+  const response = await api.get("/admin/bookings");
+  return response.data;
+}
+
+export async function cancelAdminBooking(id: string): Promise<any> {
+  const response = await api.put(`/admin/bookings/${id}/cancel`);
+  return response.data;
+}
+
+// 6. Revenue & Finance details
+export async function getFinanceDetails(): Promise<{ finance: FinanceDetails; growthChart: GrowthChartData[] }> {
+  const response = await api.get("/admin/revenue/finance");
+  return response.data;
+}
+
+// 7. Satisfaction Ratings APIs
+export async function getSatisfactionRatings(className: string): Promise<{ satisfaction: SatisfactionRating[]; trend: any[] }> {
+  const response = await api.get(`/admin/satisfaction?class=${className}`);
+  return response.data;
+}
+
+// 8. Exam Attendance Statistics
+export async function getExamAttendanceStats(): Promise<{ stats: ExamAttendanceStat[] }> {
+  const response = await api.get("/admin/exams/attendance-stats");
+  return response.data;
+}
+
+// 9. Generic Users APIs (Unified Manager)
+export async function getAdminUsers(): Promise<{ users: AdminUser[] }> {
+  const response = await api.get("/admin/users");
+  return response.data;
+}
+
+export async function updateAdminUser(id: string, data: any): Promise<any> {
+  const response = await api.put(`/admin/users/${id}`, data);
+  return response.data;
+}
+
+// Re-exports from classrooms for convenience
 export async function getAdminClassrooms(): Promise<{ classrooms: AdminClassroom[] }> {
   const response = await api.get("/admin/classrooms");
   return response.data;
@@ -150,7 +313,6 @@ export async function deleteAdminClassroom(id: string): Promise<any> {
   return response.data;
 }
 
-// Classroom Members Management APIs
 export async function getClassroomMembers(classroomId: string): Promise<{ members: ClassroomMember[] }> {
   const response = await api.get(`/admin/classrooms/${classroomId}/members`);
   return response.data;
