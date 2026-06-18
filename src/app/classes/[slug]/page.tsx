@@ -34,7 +34,7 @@ const t = {
     teacherInfo: "শিক্ষক মণ্ডলী",
     teacherDesc: "বুয়েট, ডিএমসি এবং ঢাবির সেরা গ্রাজুয়েটদের দ্বারা ক্লাস পরিচালিত হয় যাদের ৫ বছরের বেশি শিক্ষকতার অভিজ্ঞতা রয়েছে।",
     contactHelp: "ভর্তি ডেস্কে যোগাযোগ করুন",
-    logo: "আরএএস একাডেমিক পয়েন্ট",
+    logo: "রাস একাডেমিক পয়েন্ট",
     feature1: "অভিজ্ঞ শিক্ষক মণ্ডলী",
     feature2: "মাসিক প্রস্তুতি পরীক্ষা",
     feature3: "ডিজিটাল স্টাডি ম্যাটেরিয়ালস",
@@ -46,7 +46,7 @@ const classData: Record<string, any> = {
   "class-8": {
     nameEn: "Class 8 Academic Program",
     nameBn: "অষ্টম শ্রেণী একাডেমিক প্রোগ্রাম",
-    image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop&q=80",
+    image: "https://www.bssnews.net/assets/news_photos/2025/04/15/image-263451-1744733758.jpg?w=600&auto=format&fit=crop&q=80",
     descEn: "Complete curriculum preparation for school final exams and core logic/foundation development in Math & Science.",
     descBn: "স্কুল ফাইনাল পরীক্ষা এবং গণিত ও বিজ্ঞানের মূল লজিক ও ভিত্তি বিকাশের জন্য সম্পূর্ণ সিলেবাস প্রস্তুতি।",
     subjectsEn: "Mathematics, Science, English, ICT, Bangla",
@@ -57,7 +57,7 @@ const classData: Record<string, any> = {
   "class-9": {
     nameEn: "Class 9 Science & Commerce",
     nameBn: "নবম শ্রেণী বিজ্ঞান ও ব্যবসায় শিক্ষা",
-    image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&auto=format&fit=crop&q=80",
+    image: "https://www.bssnews.net/assets/news_photos/2025/04/15/image-263451-1744733758.jpg?w=800&auto=format&fit=crop&q=80",
     descEn: "Core concepts building in Physics, Chemistry, Biology, Math and Business/Accounting studies for future board examinations.",
     descBn: "ভবিষ্যত বোর্ড পরীক্ষার জন্য পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান, গণিত এবং ব্যবসায়/হিসাববিজ্ঞানের মূল ধারণা গঠন।",
     subjectsEn: "Physics, Chemistry, Higher Math, Biology, Accounting",
@@ -68,7 +68,7 @@ const classData: Record<string, any> = {
   "ssc-batch": {
     nameEn: "SSC Special Target Batch",
     nameBn: "এসএসসি স্পেশাল টার্গেট ব্যাচ",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80",
+    image: "https://www.bssnews.net/assets/news_photos/2025/04/15/image-263451-1744733758.jpg?w=800&auto=format&fit=crop&q=80",
     descEn: "Intensive model test program, board question paper solving, and target GPA 5.00 revision guides.",
     descBn: "নিবিড় মডেল টেস্ট প্রোগ্রাম, বোর্ড প্রশ্নপত্র সমাধান এবং জিপিএ-৫ নিশ্চিতকরণ রিভিশন গাইডলাইন।",
     subjectsEn: "All Board Compulsory & Science/Commerce Group Subjects",
@@ -142,7 +142,7 @@ export default function ClassDetailsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
           <Link href="/" className="flex items-center space-x-2.5">
             <img 
-              src="/RAS Academic Logo.png" 
+              src="/RAS Academic.png" 
               alt="RAS Academic Logo" 
               className="h-10 w-auto object-contain dark:brightness-110" 
             />

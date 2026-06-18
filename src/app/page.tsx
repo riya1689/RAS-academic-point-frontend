@@ -6,9 +6,12 @@ import Link from "next/link";
 import { 
   Sun, Moon, Bell, User, Video, Globe, ChevronLeft, ChevronRight, 
   Mail, Phone, MapPin, ArrowRight, Clock, Menu, X, Award, BookOpen, 
-  HelpCircle, LogOut, Check, ChevronDown, MessageSquare, Shield, BookOpenCheck, LayoutDashboard, FileText
+  HelpCircle, LogOut, Check, ChevronDown, MessageSquare, Shield, BookOpenCheck, LayoutDashboard, FileText,
+  Target, Heart
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import clsx from "clsx";
+import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 
 // English and Bengali Translations
 const t = {
@@ -266,11 +269,178 @@ const heroSlides = [
   }
 ];
 
+const steps = [
+  {
+    step: 1,
+    titleEn: "Set Clear Goals",
+    titleBn: "লক্ষ্য নির্ধারণ",
+    descEn: "Define specific, measurable, and realistic academic targets.",
+    descBn: "আপনার পড়াশোনা এবং পরীক্ষার জন্য সুনির্দিষ্ট ও বাস্তবসম্মত লক্ষ্য নির্ধারণ করুন।",
+    icon: Target,
+  },
+  {
+    step: 2,
+    titleEn: "Study Consistently",
+    titleBn: "নিয়মিত পড়াশোনা",
+    descEn: "Set aside dedicated study hours every single day.",
+    descBn: "প্রতিদিন নির্দিষ্ট সময় মনোযোগ দিয়ে পড়াশোনা করুন।",
+    icon: BookOpen,
+  },
+  {
+    step: 3,
+    titleEn: "Practice & Revise Regularly",
+    titleBn: "অনুশীলন ও পুনরাবৃত্তি",
+    descEn: "Reinforce your learning by solving test papers frequently.",
+    descBn: "পঠিত বিষয় বারবার রিভিশন ও প্র্যাকটিস করুন।",
+    icon: FileText,
+  },
+  {
+    step: 4,
+    titleEn: "Manage Time Effectively",
+    titleBn: "সময় ব্যবস্থাপনা",
+    descEn: "Balance study sessions, rest, and exam schedules wisely.",
+    descBn: "পড়ালেখা ও বিশ্রামের সময় সঠিকভাবে বন্টন করুন।",
+    icon: Clock,
+  },
+  {
+    step: 5,
+    titleEn: "Maintain Health & Focus",
+    titleBn: "সুস্থ শরীর ও মন",
+    descEn: "Stay physically active, sleep well, and keep a positive mindset.",
+    descBn: "পর্যাপ্ত ঘুম, পুষ্টিকর খাবার ও মানসিক প্রশান্তি বজায় রাখুন।",
+    icon: Heart,
+  },
+  {
+    step: 6,
+    titleEn: "Achievement",
+    titleBn: "সাফল্য অর্জন",
+    descEn: "Reach your destination with target GPA 5.0 and success.",
+    descBn: "পরীক্ষায় কাঙ্ণ্ডিত জিপিএ ৫ এবং চমৎকার ফলাফল লাভ।",
+    icon: Award,
+  }
+];
+
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
+
+  // Refs and States for 5 Steps Roadmap animation
+  const containerRef = useRef<HTMLDivElement>(null);
+  const desktopPathRef = useRef<SVGPathElement | null>(null);
+  const mobilePathRef = useRef<SVGPathElement | null>(null);
+
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  const [isInView, setIsInView] = useState(false);
+  const progress = useMotionValue(0);
+
+  useEffect(() => {
+    if (loading) return;
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        console.log("IntersectionObserver entry isIntersecting:", entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+    };
+  }, [loading]);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (isInView) {
+      animate(0, 1, {
+        duration: 6,
+        times: [0, 0.85, 1],
+        ease: ["easeOut", "easeIn"],
+        onUpdate: (v) => {
+          progress.set(v);
+          
+          // Desktop updates
+          const d0 = getPointAt(desktopPathRef, v, 0, { x: 200, y: 100 });
+          const d1 = getPointAt(desktopPathRef, v, 0.02, { x: 200, y: 100 });
+          const d2 = getPointAt(desktopPathRef, v, 0.045, { x: 200, y: 100 });
+          desktopX.set(d0.x);
+          desktopY.set(d0.y);
+          desktopTrailX1.set(d1.x);
+          desktopTrailY1.set(d1.y);
+          desktopTrailX2.set(d2.x);
+          desktopTrailY2.set(d2.y);
+
+          // Mobile updates
+          const m0 = getPointAt(mobilePathRef, v, 0, { x: 100, y: 100 });
+          const m1 = getPointAt(mobilePathRef, v, 0.02, { x: 100, y: 100 });
+          const m2 = getPointAt(mobilePathRef, v, 0.045, { x: 100, y: 100 });
+          mobileX.set(m0.x);
+          mobileY.set(m0.y);
+          mobileTrailX1.set(m1.x);
+          mobileTrailY1.set(m1.y);
+          mobileTrailX2.set(m2.x);
+          mobileTrailY2.set(m2.y);
+        },
+        onComplete: () => {
+          setIsCompleted(true);
+        }
+      });
+    }
+  }, [isInView]);
+
+  // True path-following lookup: real SVG geometry via getTotalLength + getPointAtLength
+  const getPointAt = (
+    pathRef: React.RefObject<SVGPathElement | null>,
+    value: number,
+    lag: number,
+    fallback: { x: number; y: number }
+  ) => {
+    try {
+      const path = pathRef.current;
+      if (!path) {
+        return fallback;
+      }
+      const length = path.getTotalLength();
+      if (!length) {
+        return fallback;
+      }
+      const t = Math.min(1, Math.max(0, value - lag));
+      const pt = path.getPointAtLength(t * length);
+      return pt;
+    } catch (e) {
+      return fallback;
+    }
+  };
+
+  // Desktop dot + trail
+  const desktopX = useMotionValue(200);
+  const desktopY = useMotionValue(100);
+  const desktopTrailX1 = useMotionValue(200);
+  const desktopTrailY1 = useMotionValue(100);
+  const desktopTrailX2 = useMotionValue(200);
+  const desktopTrailY2 = useMotionValue(100);
+
+  // Mobile dot + trail
+  const mobileX = useMotionValue(100);
+  const mobileY = useMotionValue(100);
+  const mobileTrailX1 = useMotionValue(100);
+  const mobileTrailY1 = useMotionValue(100);
+  const mobileTrailX2 = useMotionValue(100);
+  const mobileTrailY2 = useMotionValue(100);
 
   // Localization and theme states
   const [isBengali, setIsBengali] = useState(true);
@@ -998,49 +1168,362 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 7. SKILL DEVELOPMENT VIDEOS SECTION */}
-      <section className="bg-bg-alt border-t border-border-main py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-12">
-            <h2 className="text-3xl font-extrabold bg-gradient-to-r from-brand-primary dark:from-brand-secondary to-brand-secondary bg-clip-text text-transparent">
-              {currentLang.skillVideos}
-            </h2>
+      {/* 5 STEPS FOR BETTER RESULT SECTION */}
+      <section ref={containerRef} className="relative bg-bg-alt border-t border-border-main py-20 overflow-hidden animate-fadeIn">
+        {/* Decorative Grid Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-10 dark:opacity-20 pointer-events-none"></div>
+        
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          
+          {/* Header */}
+          <div className="text-center space-y-4 mb-16 relative z-10">
+            <motion.span 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-block bg-brand-secondary/10 dark:bg-brand-secondary/20 text-brand-secondary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider"
+            >
+              {isBengali ? "সফলতার রোডম্যাপ" : "Success Roadmap"}
+            </motion.span>
+            
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl md:text-4xl font-black bg-gradient-to-r from-brand-primary dark:from-brand-secondary to-emerald-500 bg-clip-text text-transparent"
+            >
+              {isBengali ? "ভালো রেজাল্ট করার ৫ টি ধাপ" : "5 Steps for Better Result"}
+            </motion.h2>
+            
             <p className="text-text-sec text-sm max-w-lg mx-auto">
-              {currentLang.skillSub}
+              {isBengali 
+                ? "আমাদের ৫টি বৈজ্ঞানিক ধাপ অনুসরণ করে পড়াশোনায় কাঙ্ক্ষিত লক্ষ্য ও সর্বোত্তম ফলাফল অর্জন করো।" 
+                : "Follow our 5 proven scientific steps to achieve your target academic results and excellence."}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {videoData.map((v) => (
-              <div key={v.id} className="bg-bg-surface border border-border-main rounded-2xl overflow-hidden flex flex-col justify-between hover:border-brand-primary/40 transition shadow-lg group">
-                <div>
-                  <div className="aspect-video bg-bg-main relative flex items-center justify-center cursor-pointer" onClick={() => setSelectedVideo(v)}>
-                    {/* YouTube Thumbnail Overlay */}
-                    <img 
-                      src={`https://img.youtube.com/vi/${v.embedId}/mqdefault.jpg`} 
-                      alt={v.titleEn} 
-                      className="w-full h-full object-cover opacity-80" 
-                    />
-                    <div className="absolute p-4.5 bg-brand-primary text-white rounded-full shadow-2xl group-hover:scale-110 transition duration-200">
-                      <Video size={20} />
-                    </div>
-                  </div>
-                  <div className="p-6 space-y-2">
-                    <h3 className="font-bold text-base text-text-main">{isBengali ? v.titleBn : v.titleEn}</h3>
-                    <p className="text-xs text-text-mut leading-relaxed">{isBengali ? v.descBn : v.descEn}</p>
-                  </div>
-                </div>
-                <div className="p-6 pt-0">
-                  <button 
-                    onClick={() => setSelectedVideo(v)}
-                    className="w-full flex items-center justify-center space-x-1.5 bg-brand-primary hover:bg-brand-primary-hover text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer"
+          {/* Roadmap Container */}
+          <div className="relative mt-12 min-h-[1200px] md:min-h-[600px]">
+            
+            {/* 1a. DESKTOP SVG BACKGROUND PATHS */}
+            <svg 
+              className="hidden md:block absolute inset-0 w-full h-full pointer-events-none overflow-visible z-0" 
+              viewBox="0 0 800 600" 
+              preserveAspectRatio="none"
+              fill="none"
+            >
+              <defs>
+                <linearGradient id="roadmap-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#39a4d1" />
+                  <stop offset="50%" stopColor="#10b981" />
+                  <stop offset="100%" stopColor="#f59e0b" />
+                </linearGradient>
+              </defs>
+
+              {/* Unlit background path */}
+              <path
+                d="M 200 100 L 560 100 Q 600 100 600 140 L 600 260 Q 600 300 560 300 L 240 300 Q 200 300 200 340 L 200 460 Q 200 500 240 500 L 600 500"
+                stroke={isDarkMode ? "#1e293b" : "#e2e8f0"}
+                strokeWidth="6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Soft Glow path */}
+              <motion.path
+                d="M 200 100 L 560 100 Q 600 100 600 140 L 600 260 Q 600 300 560 300 L 240 300 Q 200 300 200 340 L 200 460 Q 200 500 240 500 L 600 500"
+                stroke="url(#roadmap-gradient)"
+                strokeWidth="14"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ pathLength: progress, opacity: 0.35 }}
+              />
+
+              {/* Active path */}
+              <motion.path
+                ref={desktopPathRef}
+                d="M 200 100 L 560 100 Q 600 100 600 140 L 600 260 Q 600 300 560 300 L 240 300 Q 200 300 200 340 L 200 460 Q 200 500 240 500 L 600 500"
+                stroke="url(#roadmap-gradient)"
+                strokeWidth="6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ pathLength: progress }}
+              />
+            </svg>
+
+            {/* 2a. MOBILE SVG BACKGROUND PATHS */}
+            <svg 
+              className="block md:hidden absolute inset-0 w-full h-full pointer-events-none overflow-visible z-0" 
+              viewBox="0 0 200 1200" 
+              preserveAspectRatio="none"
+              fill="none"
+            >
+              <defs>
+                <linearGradient id="roadmap-gradient-mobile" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#39a4d1" />
+                  <stop offset="50%" stopColor="#10b981" />
+                  <stop offset="100%" stopColor="#f59e0b" />
+                </linearGradient>
+              </defs>
+
+              {/* Unlit background path */}
+              <path
+                d="M 100 100 L 100 1100"
+                stroke={isDarkMode ? "#1e293b" : "#e2e8f0"}
+                strokeWidth="6"
+                strokeLinecap="round"
+              />
+
+              {/* Soft Glow path */}
+              <motion.path
+                d="M 100 100 L 100 1100"
+                stroke="url(#roadmap-gradient-mobile)"
+                strokeWidth="14"
+                strokeLinecap="round"
+                style={{ pathLength: progress, opacity: 0.35 }}
+              />
+
+              {/* Active path */}
+              <motion.path
+                ref={mobilePathRef}
+                d="M 100 100 L 100 1100"
+                stroke="url(#roadmap-gradient-mobile)"
+                strokeWidth="6"
+                strokeLinecap="round"
+                style={{ pathLength: progress }}
+              />
+            </svg>
+
+            {/* Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-6 md:grid-rows-3 h-[1200px] md:h-[600px] gap-y-0 relative z-10">
+              {steps.map((item, idx) => {
+                const IconComponent = item.icon;
+                const isAchievement = item.step === 6;
+                
+                return (
+                  <div
+                    key={item.step}
+                    className={clsx(
+                      "w-full h-full flex items-center justify-center px-4 md:px-8 transition-all duration-700",
+                      // Grid position classes for S-path layout on desktop and standard on mobile
+                      idx === 0 && "col-start-1 row-start-1 md:col-start-1 md:row-start-1",
+                      idx === 1 && "col-start-1 row-start-2 md:col-start-2 md:row-start-1",
+                      idx === 2 && "col-start-1 row-start-3 md:col-start-2 md:row-start-2",
+                      idx === 3 && "col-start-1 row-start-4 md:col-start-1 md:row-start-2",
+                      idx === 4 && "col-start-1 row-start-5 md:col-start-1 md:row-start-3",
+                      idx === 5 && "col-start-1 row-start-6 md:col-start-2 md:row-start-3",
+                    )}
                   >
-                    <Video size={14} />
-                    <span>{currentLang.watchVideo}</span>
-                  </button>
-                </div>
-              </div>
-            ))}
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-50px" }}
+                      transition={{ duration: 0.6, delay: idx * 0.1 }}
+                      className={clsx(
+                        "relative p-5 rounded-2xl border transition-all duration-500 w-full max-w-[380px] h-[130px] flex flex-col justify-center",
+                        isAchievement
+                          ? isCompleted
+                            ? "bg-gradient-to-br from-emerald-500/10 to-amber-500/10 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.35)] scale-[1.03]"
+                            : "bg-bg-surface/80 border-dashed border-border-main"
+                          : "bg-bg-surface/80 hover:bg-bg-surface border-border-main hover:border-brand-primary/40 shadow-md hover:shadow-xl"
+                      )}
+                    >
+                      {/* Card Content Layout */}
+                      <div className="flex items-start space-x-4">
+                        {/* Icon & Step Number */}
+                        <div className={clsx(
+                          "p-3 rounded-xl flex-shrink-0 relative",
+                          isAchievement
+                            ? isCompleted
+                              ? "bg-emerald-500 text-white animate-bounce"
+                              : "bg-bg-alt text-text-mut"
+                            : "bg-brand-primary/10 text-brand-primary dark:text-brand-secondary"
+                        )}>
+                          <IconComponent size={20} />
+                          <span className="absolute -top-2 -right-2 text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-brand-accent text-white shadow-md">
+                            0{item.step}
+                          </span>
+                        </div>
+
+                        {/* Text Content */}
+                        <div className="space-y-1.5">
+                          <h3 className={clsx(
+                            "font-extrabold text-base transition-colors duration-300",
+                            isAchievement && isCompleted 
+                              ? "text-emerald-500 dark:text-emerald-400" 
+                              : "text-text-main"
+                          )}>
+                            {isBengali ? item.titleBn : item.titleEn}
+                          </h3>
+                          <p className="text-[11px] text-text-sec leading-relaxed">
+                            {isBengali ? item.descBn : item.descEn}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Achievement Cup animation */}
+                      {isAchievement && isCompleted && (
+                        <div className="absolute top-2.5 right-2.5 text-emerald-500 animate-pulse">
+                          <motion.span 
+                            initial={{ scale: 0.8 }} 
+                            animate={{ scale: [1, 1.2, 1] }} 
+                            transition={{ repeat: Infinity, duration: 2 }}
+                            className="text-lg"
+                          >
+                            🏆
+                          </motion.span>
+                        </div>
+                      )}
+                    </motion.div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* 1b. DESKTOP SVG FOREGROUND DOT & RIPPLES */}
+            <svg 
+              className="hidden md:block absolute inset-0 w-full h-full pointer-events-none overflow-visible z-20" 
+              viewBox="0 0 800 600" 
+              preserveAspectRatio="none"
+              fill="none"
+            >
+              <defs>
+                <radialGradient id="dot-gradient" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="40%" stopColor="#34d399" />
+                  <stop offset="100%" stopColor="#059669" />
+                </radialGradient>
+                <filter id="glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="6" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              {/* Glowing Moving Dot */}
+              <g style={{ pointerEvents: "none" }}>
+                {/* Soft glowing trail behind the dot */}
+                <motion.circle 
+                  cx={desktopTrailX2} 
+                  cy={desktopTrailY2} 
+                  r="5" 
+                  fill="#10b981" 
+                  initial={{ opacity: 0.12 }}
+                  animate={{ opacity: isCompleted ? 0 : 0.12 }} 
+                  transition={{ duration: 0.5 }}
+                  filter="url(#glow-filter)" 
+                />
+                <motion.circle 
+                  cx={desktopTrailX1} 
+                  cy={desktopTrailY1} 
+                  r="7" 
+                  fill="#10b981" 
+                  initial={{ opacity: 0.22 }}
+                  animate={{ opacity: isCompleted ? 0 : 0.22 }} 
+                  transition={{ duration: 0.5 }}
+                  filter="url(#glow-filter)" 
+                />
+
+                <motion.circle cx={desktopX} cy={desktopY} r="16" fill="#10b981" opacity="0.4" filter="url(#glow-filter)" />
+                <motion.circle cx={desktopX} cy={desktopY} r="10" fill="url(#dot-gradient)" />
+                <motion.circle cx={desktopX} cy={desktopY} r="4" fill="#ffffff" />
+              </g>
+
+              {/* Pulse ripples at completion */}
+              {isCompleted && (
+                <motion.circle
+                  cx={600}
+                  cy={500}
+                  stroke="#10b981"
+                  strokeWidth="2.5"
+                  fill="#10b981"
+                  fillOpacity="0.25"
+                  animate={{
+                    r: [10, 25, 35, 10],
+                    opacity: [0.8, 0.4, 0, 0.8]
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: 2,
+                    ease: "easeOut"
+                  }}
+                />
+              )}
+            </svg>
+
+            {/* 2b. MOBILE SVG FOREGROUND DOT & RIPPLES */}
+            <svg 
+              className="block md:hidden absolute inset-0 w-full h-full pointer-events-none overflow-visible z-20" 
+              viewBox="0 0 200 1200" 
+              preserveAspectRatio="none"
+              fill="none"
+            >
+              <defs>
+                <radialGradient id="dot-gradient-mobile" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="40%" stopColor="#34d399" />
+                  <stop offset="100%" stopColor="#059669" />
+                </radialGradient>
+                <filter id="glow-filter-mobile" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="6" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              {/* Glowing Moving Dot */}
+              <g style={{ pointerEvents: "none" }}>
+                <motion.circle 
+                  cx={mobileTrailX2} 
+                  cy={mobileTrailY2} 
+                  r="5" 
+                  fill="#10b981" 
+                  initial={{ opacity: 0.12 }}
+                  animate={{ opacity: isCompleted ? 0 : 0.12 }} 
+                  transition={{ duration: 0.5 }}
+                  filter="url(#glow-filter-mobile)" 
+                />
+                <motion.circle 
+                  cx={mobileTrailX1} 
+                  cy={mobileTrailY1} 
+                  r="7" 
+                  fill="#10b981" 
+                  initial={{ opacity: 0.22 }}
+                  animate={{ opacity: isCompleted ? 0 : 0.22 }} 
+                  transition={{ duration: 0.5 }}
+                  filter="url(#glow-filter-mobile)" 
+                />
+
+                <motion.circle cx={mobileX} cy={mobileY} r="16" fill="#10b981" opacity="0.4" filter="url(#glow-filter-mobile)" />
+                <motion.circle cx={mobileX} cy={mobileY} r="10" fill="url(#dot-gradient-mobile)" />
+                <motion.circle cx={mobileX} cy={mobileY} r="4" fill="#ffffff" />
+              </g>
+
+              {/* Pulse ripples at completion */}
+              {isCompleted && (
+                <motion.circle
+                  cx={100}
+                  cy={1100}
+                  stroke="#10b981"
+                  strokeWidth="2.5"
+                  fill="#10b981"
+                  fillOpacity="0.25"
+                  animate={{
+                    r: [10, 25, 35, 10],
+                    opacity: [0.8, 0.4, 0, 0.8]
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: 2,
+                    ease: "easeOut"
+                  }}
+                />
+              )}
+            </svg>
           </div>
         </div>
       </section>

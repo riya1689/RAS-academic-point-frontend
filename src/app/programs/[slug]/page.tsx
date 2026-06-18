@@ -23,7 +23,7 @@ const t = {
     overview: "প্রোগ্রাম পরিচিতি",
     features: "প্রোগ্রামের প্রধান দিক সমূহ",
     contactHelp: "প্রোগ্রাম সম্পর্কে অনুসন্ধান করুন",
-    logo: "আরএএস একাডেমিক পয়েন্ট",
+    logo: "রাস একাডেমিক পয়েন্ট",
     timelineLabel: "প্রোগ্রাম সময়সীমা",
     statusLabel: "প্রোগ্রাম স্ট্যাটাস",
     activeStatus: "চলমান",
@@ -59,7 +59,7 @@ const programData: Record<string, any> = {
   "tour": {
     nameEn: "Annual Educational Tour",
     nameBn: "বার্ষিক শিক্ষাসফর",
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80",
+    image: "https://www.bracu.ac.bd/sites/default/files/news-image/Study%20tours%20of%20Curzon%20Hall%2C%20Institute%20of%20Fine%20Arts%20and%20Panam%20Nagar%20by%20ARC%20101%20students%202.jpg?w=600&auto=format&fit=crop&q=80",
     descEn: "We organize annual historic site explorations, visits to national science museums, and team-building retreats to build practical real-world knowledge, refresh student minds, and foster healthy social connection.",
     descBn: "বাস্তবিক জ্ঞান অর্জন, শিক্ষার্থীদের মনকে চাঙ্গা রাখা এবং সুসম্পর্ক গড়ে তোলার জন্য আমরা বার্ষিক ঐতিহাসিক স্থান ভ্রমণ, জাতীয় বিজ্ঞান জাদুঘর পরিদর্শন এবং টিম-বিল্ডিং ভ্রমণের আয়োজন করি।",
     timelineEn: "Annually during winter break (December/January)",
@@ -82,7 +82,7 @@ const programData: Record<string, any> = {
   "scholar": {
     nameEn: "Scholarship Program",
     nameBn: "মেধা বৃত্তি প্রোগ্রাম",
-    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1534644107580-3a4dbd494a95?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2Nob2xhcnNoaXAlMjBleGFtfGVufDB8fDB8fHww?w=600&auto=format&fit=crop&q=80",
     descEn: "Aiming to promote academic excellence, we offer tuition fee waivers, merit achievements medals, and financial aids to the top academic scorers in our monthly evaluations as well as support for talented underprivileged children.",
     descBn: "একাডেমিক শ্রেষ্ঠত্বকে উৎসাহিত করার লক্ষ্যে আমরা আমাদের মাসিক মূল্যায়নের শীর্ষস্থান অধিকারীদের টিউশন ফি ছাড়, মেধা মেডেল এবং সুবিধাবঞ্চিত মেধাবী শিক্ষার্থীদের জন্য আর্থিক সহায়তা প্রদান করি।",
     timelineEn: "Annually evaluated (Enrollment in January)",
