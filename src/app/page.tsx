@@ -247,11 +247,11 @@ const galleryImages = [
 
 const heroSlides = [
   {
-    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop&q=80",
+    image: "/rasAcademicBanner.png?w=1200&auto=format&fit=crop&q=80",
     titleEn: "Empowering Students for Academic Excellence",
-    titleBn: "একাডেমিক শ্রেষ্ঠত্বের জন্য শিক্ষার্থীদের ক্ষমতায়ন",
+    titleBn: "পড়ো তোমার প্রভুর নামে",
     descEn: "RAS Academic Point is a leading coaching center specializing in Class 8, Class 9, and SSC preparation.",
-    descBn: "আরএএস একাডেমিক পয়েন্ট ক্লাস ৮, ক্লাস ৯ এবং এসএসসি প্রস্তুতির জন্য একটি শীর্ষস্থানীয় প্রতিষ্ঠান।"
+    descBn: "রাস একাডেমিক পয়েন্ট ক্লাস ৮, ক্লাস ৯ এবং এসএসসি প্রস্তুতির জন্য একটি শীর্ষস্থানীয় প্রতিষ্ঠান।"
   },
   {
     image: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=1200&auto=format&fit=crop&q=80",
