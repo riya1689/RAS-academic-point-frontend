@@ -46,7 +46,7 @@ const classData: Record<string, any> = {
   "class-8": {
     nameEn: "Class 8 Academic Program",
     nameBn: "অষ্টম শ্রেণী একাডেমিক প্রোগ্রাম",
-    image: "https://www.bssnews.net/assets/news_photos/2025/04/15/image-263451-1744733758.jpg?w=600&auto=format&fit=crop&q=80",
+    image: "/classeight.png?w=600&auto=format&fit=crop&q=80",
     descEn: "Complete curriculum preparation for school final exams and core logic/foundation development in Math & Science.",
     descBn: "স্কুল ফাইনাল পরীক্ষা এবং গণিত ও বিজ্ঞানের মূল লজিক ও ভিত্তি বিকাশের জন্য সম্পূর্ণ সিলেবাস প্রস্তুতি।",
     subjectsEn: "Mathematics, Science, English, ICT, Bangla",
@@ -57,7 +57,7 @@ const classData: Record<string, any> = {
   "class-9": {
     nameEn: "Class 9 Science & Commerce",
     nameBn: "নবম শ্রেণী বিজ্ঞান ও ব্যবসায় শিক্ষা",
-    image: "https://www.bssnews.net/assets/news_photos/2025/04/15/image-263451-1744733758.jpg?w=800&auto=format&fit=crop&q=80",
+    image: "/classnine.png?w=800&auto=format&fit=crop&q=80",
     descEn: "Core concepts building in Physics, Chemistry, Biology, Math and Business/Accounting studies for future board examinations.",
     descBn: "ভবিষ্যত বোর্ড পরীক্ষার জন্য পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান, গণিত এবং ব্যবসায়/হিসাববিজ্ঞানের মূল ধারণা গঠন।",
     subjectsEn: "Physics, Chemistry, Higher Math, Biology, Accounting",
@@ -68,7 +68,7 @@ const classData: Record<string, any> = {
   "ssc-batch": {
     nameEn: "SSC Special Target Batch",
     nameBn: "এসএসসি স্পেশাল টার্গেট ব্যাচ",
-    image: "https://www.bssnews.net/assets/news_photos/2025/04/15/image-263451-1744733758.jpg?w=800&auto=format&fit=crop&q=80",
+    image: "/ssc.png?w=800&auto=format&fit=crop&q=80",
     descEn: "Intensive model test program, board question paper solving, and target GPA 5.00 revision guides.",
     descBn: "নিবিড় মডেল টেস্ট প্রোগ্রাম, বোর্ড প্রশ্নপত্র সমাধান এবং জিপিএ-৫ নিশ্চিতকরণ রিভিশন গাইডলাইন।",
     subjectsEn: "All Board Compulsory & Science/Commerce Group Subjects",

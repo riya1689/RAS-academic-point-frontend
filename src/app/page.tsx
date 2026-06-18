@@ -157,7 +157,7 @@ const classData = [
     nameEn: "Class 8 Academic Program",
     nameBn: "অষ্টম শ্রেণী একাডেমিক প্রোগ্রাম",
     filter: "Class 8",
-    image: "https://www.bssnews.net/assets/news_photos/2025/04/15/image-263451-1744733758.jpg?w=600&auto=format&fit=crop&q=80",
+    image: "/classeight.png?w=600&auto=format&fit=crop&q=80",
     descEn: "Complete curriculum preparation for school finals and foundation development.",
     descBn: "স্কুল ফাইনাল এবং মৌলিক মেধা বিকাশের জন্য সম্পূর্ণ সিলেবাস প্রস্তুতি।",
     subjectsEn: "Mathematics, Science, English, ICT, Bangla",
@@ -172,7 +172,7 @@ const classData = [
     nameEn: "Class 9 Science & Commerce",
     nameBn: "নবম শ্রেণী বিজ্ঞান ও ব্যবসায় শিক্ষা",
     filter: "Class 9",
-    image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&auto=format&fit=crop&q=80",
+    image: "/classnine.png?w=600&auto=format&fit=crop&q=80",
     descEn: "Core concepts building in Physics, Chemistry, Biology, Math and Business studies.",
     descBn: "পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান, গণিত এবং ব্যবসায় শিক্ষার মূল ধারণা গঠন।",
     subjectsEn: "Physics, Chemistry, Higher Math, Biology, Accounting",
@@ -187,7 +187,7 @@ const classData = [
     nameEn: "SSC Special Target Batch",
     nameBn: "এসএসসি স্পেশাল টার্গেট ব্যাচ",
     filter: "SSC Batch",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&auto=format&fit=crop&q=80",
+    image: "/ssc.png?w=600&auto=format&fit=crop&q=80",
     descEn: "Intensive model test program, test paper solving, and target GPA 5.00 guides.",
     descBn: "নিবিড় মডেল টেস্ট প্রোগ্রাম, টেস্ট পেপার সলভিং এবং গোল্ডেন জিপিএ-৫ গাইডলাইন।",
     subjectsEn: "All Board Compulsory & Group Subjects",
@@ -959,7 +959,7 @@ export default function Home() {
             {/* Hero Image */}
             <div className="h-[220px] overflow-hidden relative">
               <img 
-                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&auto=format&fit=crop&q=80" 
+                src="https://img.magnific.com/premium-photo/photograph-12-15-age-indian-school-girl-boys-students-holding-books-clear-facial-features-white-background-ar-32-style-raw-v-6-job-id-52618d9f8589484b87c969cc439d417e_939033-131154.jpg?w=360?w=600&auto=format&fit=crop&q=80" 
                 alt="Student Portal" 
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
               />
@@ -995,7 +995,7 @@ export default function Home() {
             {/* Hero Image */}
             <div className="h-[220px] overflow-hidden relative">
               <img 
-                src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&auto=format&fit=crop&q=80" 
+                src="https://i0.wp.com/pecpte.com/wp-content/uploads/2025/02/PTE-One-to-One-Coaching-in-Dhaka.jpg?resize=840%2C430&ssl=1?w=600&auto=format&fit=crop&q=80" 
                 alt="Teacher Portal" 
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
               />
@@ -1031,7 +1031,7 @@ export default function Home() {
             {/* Hero Image */}
             <div className="h-[220px] overflow-hidden relative">
               <img 
-                src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=600&auto=format&fit=crop&q=80" 
+                src="https://thumbs.dreamstime.com/b/astonished-father-son-celebrating-online-success-using-laptop-home-father-son-astonished-receiving-good-news-using-170471281.jpg?w=600&auto=format&fit=crop&q=80" 
                 alt="Guardian Portal" 
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
               />
