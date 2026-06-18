@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Toaster } from "react-hot-toast";
 import { BookOpen, LogOut, User as UserIcon, Home, Menu, X, HelpCircle, FileText, Trophy, Calendar, Globe, Shield, ShieldAlert, DollarSign, Award, Smile, RefreshCw, BarChart2, Wallet } from "lucide-react";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -108,7 +108,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <UserIcon size={18} />
                 <span>Teacher Management</span>
               </button>
-
+              
               <button
                 onClick={() => { setIsSidebarOpen(false); router.push("/dashboard/admin?tab=support"); }}
                 className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition duration-150 ${
@@ -253,5 +253,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {children}
       </main>
     </div>
+  );
+}
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-400"></div>
+      </div>
+    }>
+      <DashboardLayoutContent>{children}</DashboardLayoutContent>
+    </Suspense>
   );
 }

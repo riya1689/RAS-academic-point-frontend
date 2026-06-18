@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { getGoogleAuthUrl, createSlots, getMyTeacherSlots, cancelBooking, getMyBookings } from "@/lib/booking.api";
 import { Calendar as CalendarIcon, Clock, Plus, Trash2, Link as LinkIcon, CheckCircle2, User, Users } from "lucide-react";
 import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 
-export default function TeacherBookingPage() {
+function TeacherBookingPageContent() {
   const [slots, setSlots] = useState<any[]>([]);
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -234,5 +234,17 @@ export default function TeacherBookingPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function TeacherBookingPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-400"></div>
+      </div>
+    }>
+      <TeacherBookingPageContent />
+    </Suspense>
   );
 }
