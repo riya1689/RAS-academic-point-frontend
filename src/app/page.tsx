@@ -807,21 +807,21 @@ export default function Home() {
                         onClick={() => setShowRegisterMenu(false)} 
                         className="block p-2.5 text-text-sec hover:text-brand-secondary hover:bg-bg-hover rounded-lg text-sm transition font-medium"
                       >
-                        🎓 {isBengali ? "শিক্ষার্থী নিবন্ধন" : "Student Register"}
+                       {isBengali ? "শিক্ষার্থী নিবন্ধন" : "Student Register"}
                       </Link>
                       <Link 
                         href="/teacher/signup" 
                         onClick={() => setShowRegisterMenu(false)} 
                         className="block p-2.5 text-text-sec hover:text-brand-secondary hover:bg-bg-hover rounded-lg text-sm transition font-medium"
                       >
-                        🧑‍🏫 {isBengali ? "শিক্ষক নিবন্ধন" : "Teacher Register"}
+                       {isBengali ? "শিক্ষক নিবন্ধন" : "Teacher Register"}
                       </Link>
                       <Link 
                         href="/guardian/signup" 
                         onClick={() => setShowRegisterMenu(false)} 
                         className="block p-2.5 text-text-sec hover:text-brand-secondary hover:bg-bg-hover rounded-lg text-sm transition font-medium"
                       >
-                        👪 {isBengali ? "অভিভাবক নিবন্ধন" : "Guardian Register"}
+                       {isBengali ? "অভিভাবক নিবন্ধন" : "Guardian Register"}
                       </Link>
                     </div>
                   )}
