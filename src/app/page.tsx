@@ -157,13 +157,15 @@ const classData = [
     nameEn: "Class 8 Academic Program",
     nameBn: "অষ্টম শ্রেণী একাডেমিক প্রোগ্রাম",
     filter: "Class 8",
-    image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&auto=format&fit=crop&q=80",
+    image: "https://www.bssnews.net/assets/news_photos/2025/04/15/image-263451-1744733758.jpg?w=600&auto=format&fit=crop&q=80",
     descEn: "Complete curriculum preparation for school finals and foundation development.",
     descBn: "স্কুল ফাইনাল এবং মৌলিক মেধা বিকাশের জন্য সম্পূর্ণ সিলেবাস প্রস্তুতি।",
     subjectsEn: "Mathematics, Science, English, ICT, Bangla",
     subjectsBn: "গণিত, বিজ্ঞান, ইংরেজি, আইসিটি, বাংলা",
     scheduleEn: "Mon, Wed, Fri - 04:00 PM to 06:00 PM",
-    scheduleBn: "সোম, বুধ, শুক্র - বিকাল ০৪:০০ থেকে সন্ধ্যা ০৬:০০"
+    scheduleBn: "সোম, বুধ, শুক্র - বিকাল ০৪:০০ থেকে সন্ধ্যা ০৬:০০",
+    beamColor: "#3b82f6",
+    bgClass: "bg-blue-50/40 dark:bg-blue-950/10 border-blue-100 dark:border-blue-900/20"
   },
   {
     id: "class-9",
@@ -176,7 +178,9 @@ const classData = [
     subjectsEn: "Physics, Chemistry, Higher Math, Biology, Accounting",
     subjectsBn: "পদার্থবিজ্ঞান, রসায়ন, উচ্চতর গণিত, জীববিজ্ঞান, হিসাববিজ্ঞান",
     scheduleEn: "Sat, Sun, Tue - 03:30 PM to 05:30 PM",
-    scheduleBn: "শনি, রবি, মঙ্গল - দুপুর ০৩:৩০ থেকে বিকাল ০৫:৩০"
+    scheduleBn: "শনি, রবি, মঙ্গল - দুপুর ০৩:৩০ থেকে বিকাল ০৫:৩০",
+    beamColor: "#f97316",
+    bgClass: "bg-orange-50/40 dark:bg-orange-950/10 border-orange-100 dark:border-orange-900/20"
   },
   {
     id: "ssc-batch",
@@ -189,7 +193,9 @@ const classData = [
     subjectsEn: "All Board Compulsory & Group Subjects",
     subjectsBn: "সকল বোর্ড আবশ্যিক এবং গ্রুপ ভিত্তিক বিষয় সমূহ",
     scheduleEn: "Daily Class & Exams - 02:00 PM to 05:00 PM",
-    scheduleBn: "প্রতিদিন ক্লাস ও পরীক্ষা - দুপুর ০২:০০ থেকে বিকাল ০৫:০০"
+    scheduleBn: "প্রতিদিন ক্লাস ও পরীক্ষা - দুপুর ০২:০০ থেকে বিকাল ০৫:০০",
+    beamColor: "#10b981",
+    bgClass: "bg-emerald-50/40 dark:bg-emerald-950/10 border-emerald-100 dark:border-emerald-900/20"
   }
 ];
 
@@ -206,7 +212,7 @@ const programData = [
     id: "tour",
     nameEn: "Annual Educational Tour",
     nameBn: "বার্ষিক শিক্ষাসফর",
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&auto=format&fit=crop&q=80",
+    image: "https://www.bracu.ac.bd/sites/default/files/news-image/Study%20tours%20of%20Curzon%20Hall%2C%20Institute%20of%20Fine%20Arts%20and%20Panam%20Nagar%20by%20ARC%20101%20students%202.jpg?w=600&auto=format&fit=crop&q=80",
     descEn: "Exploring historic sites and museums to build practical knowledge and refresh minds.",
     descBn: "বাস্তব জ্ঞান অর্জন এবং মন সতেজ করতে ঐতিহাসিক স্থান ও জাদুঘর ভ্রমণ।"
   },
@@ -214,7 +220,7 @@ const programData = [
     id: "scholar",
     nameEn: "Scholarship Program",
     nameBn: "মেধা বৃত্তি প্রোগ্রাম",
-    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1534644107580-3a4dbd494a95?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2Nob2xhcnNoaXAlMjBleGFtfGVufDB8fDB8fHww?w=600&auto=format&fit=crop&q=80",
     descEn: "Waving fees and awarding financial assistance to top scorers and underprivileged talents.",
     descBn: "শীর্ষ স্কোরার এবং সুবিধাবঞ্চিত মেধাবীদের জন্য সম্পূর্ণ ফ্রি পড়ার ব্যবস্থা এবং আর্থিক পুরষ্কার।"
   }
@@ -654,7 +660,7 @@ export default function Home() {
     <div className={`min-h-screen transition-colors duration-200 ${isDarkMode ? "dark" : ""} bg-bg-main text-text-main`}>
       <Toaster position="top-center" />
       
-      {/* Styles for Infinite Loop Marquee */}
+      {/* Styles for Infinite Loop Marquee & Border Beam */}
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes marquee {
           0% { transform: translateX(0%); }
@@ -667,6 +673,46 @@ export default function Home() {
         }
         .animate-marquee:hover {
           animation-play-state: paused;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .border-beam-card {
+          position: relative;
+          z-index: 0;
+        }
+        .border-beam-glow {
+          pointer-events: none;
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          padding: 2.5px;
+          background: transparent;
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask-composite: exclude;
+          z-index: 10;
+          overflow: hidden;
+        }
+        .border-beam-glow::after {
+          content: "";
+          position: absolute;
+          top: -150%;
+          left: -150%;
+          width: 400%;
+          height: 400%;
+          background: conic-gradient(
+            from 0deg,
+            transparent 0%,
+            transparent 70%,
+            var(--beam-color, #10b981) 85%,
+            transparent 98%,
+            transparent 100%
+          );
+          animation: spin 6s linear infinite;
         }
       `}} />
 
@@ -1044,7 +1090,12 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredClasses.map((c) => (
-            <div key={c.id} className="bg-bg-surface dark:bg-bg-alt border border-border-main rounded-2xl overflow-hidden flex flex-col justify-between hover:border-brand-primary/40 transition shadow-lg group">
+            <div 
+              key={c.id} 
+              className={`rounded-2xl overflow-hidden flex flex-col justify-between hover:shadow-2xl transition-all duration-300 shadow-lg group relative border-beam-card border ${c.bgClass || "bg-bg-surface dark:bg-bg-alt border-border-main"}`}
+              style={{ '--beam-color': c.beamColor } as React.CSSProperties}
+            >
+              <div className="border-beam-glow" />
               <div>
                 <div className="h-48 overflow-hidden relative">
                   <img src={c.image} alt={c.nameEn} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
@@ -1155,14 +1206,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Action Button */}
-              <div className="px-6 pb-5 h-[60px] flex items-center">
-                <button 
-                  className="w-full text-center bg-brand-primary hover:bg-brand-primary-hover text-white font-bold py-2.5 rounded-lg text-xs transition cursor-pointer"
-                >
-                  {currentLang.learnMore}
-                </button>
-              </div>
+              
             </div>
           ))}
         </div>

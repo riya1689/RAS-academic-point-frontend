@@ -36,7 +36,7 @@ const programData: Record<string, any> = {
   "prep": {
     nameEn: "Exam Preparation Program",
     nameBn: "পরীক্ষা প্রস্তুতি প্রোগ্রাম",
-    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&auto=format&fit=crop&q=80",
     descEn: "Maximize exam readiness with regular board-standard mock tests, weekly model exams, in-depth test paper analysis, and personal feedback reports for Class 8, Class 9, and SSC batches.",
     descBn: "অষ্টম শ্রেণী, নবম শ্রেণী এবং এসএসসি ব্যাচের জন্য বোর্ড-মানের মক টেস্ট, সাপ্তাহিক মডেল পরীক্ষা, বিস্তারিত টেস্ট পেপার বিশ্লেষণ এবং ব্যক্তিগত অগ্রগতি রিপোর্টের মাধ্যমে পরীক্ষার সর্বোচ্চ প্রস্তুতি নিশ্চিত করুন।",
     timelineEn: "Year-round (Intensive during Final Board Exams)",
