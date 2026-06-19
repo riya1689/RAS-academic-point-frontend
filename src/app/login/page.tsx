@@ -52,7 +52,7 @@ export default function LoginPage() {
       setLoading(true);
       const response = await api.post("/auth/sign-in/social", {
         provider: "google",
-        callbackURL: `${window.location.origin}/`,
+        callbackURL: `${window.location.origin}/verify-otp`,
       });
       if (response.data && response.data.url) {
         window.location.href = response.data.url;

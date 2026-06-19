@@ -12,6 +12,7 @@ const getBackendUrl = () => {
 
 const api = axios.create({
   baseURL: getBackendUrl(),
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },

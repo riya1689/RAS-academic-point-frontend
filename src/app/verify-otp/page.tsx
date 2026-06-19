@@ -19,7 +19,17 @@ function VerifyOtpContent() {
     if (emailParam) {
       setEmail(emailParam);
     } else {
-      router.push("/login");
+      api.get("/auth/get-session")
+        .then((res) => {
+          if (res.data && res.data.user && res.data.user.email) {
+            setEmail(res.data.user.email);
+          } else {
+            router.push("/login");
+          }
+        })
+        .catch(() => {
+          router.push("/login");
+        });
     }
     const roleParam = searchParams.get("role");
     if (roleParam) {
