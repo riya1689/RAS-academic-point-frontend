@@ -1,7 +1,17 @@
 import axios from "axios";
 
+const getBackendUrl = () => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+    return "http://localhost:5000/api";
+  }
+  return "https://ras-ems-backend.vercel.app/api";
+};
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://ras-ems-backend.vercel.app/api",
+  baseURL: getBackendUrl(),
   headers: {
     "Content-Type": "application/json",
   },
