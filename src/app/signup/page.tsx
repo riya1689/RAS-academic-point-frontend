@@ -42,13 +42,21 @@ function SignupContent() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    const backendUrl =
-      process.env.NEXT_PUBLIC_API_URL ||
-      (typeof window !== "undefined" && window.location.hostname === "localhost"
-        ? "http://localhost:5000/api"
-        : "https://ras-ems-backend.vercel.app/api");
-    window.location.href = `${backendUrl}/auth/signin/google`;
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+      const response = await api.post("/auth/sign-in/social", {
+        provider: "google",
+        callbackURL: `${window.location.origin}/`,
+      });
+      if (response.data && response.data.url) {
+        window.location.href = response.data.url;
+      }
+    } catch (err) {
+      console.error("Google login error:", err);
+      setError("Failed to initialize Google login.");
+      setLoading(false);
+    }
   };
 
   return (
