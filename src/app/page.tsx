@@ -911,21 +911,21 @@ export default function Home() {
                   {showRegisterMenu && (
                     <div className="absolute right-0 mt-3 w-48 bg-bg-surface border border-border-main rounded-2xl p-2 shadow-2xl z-50 animate-scaleIn">
                       <Link 
-                        href="/student/signup" 
+                        href="/signup?role=STUDENT" 
                         onClick={() => setShowRegisterMenu(false)} 
                         className="block p-2.5 text-text-sec hover:text-brand-secondary hover:bg-bg-hover rounded-lg text-sm transition font-medium"
                       >
                        {isBengali ? "শিক্ষার্থী নিবন্ধন" : "Student Register"}
                       </Link>
                       <Link 
-                        href="/teacher/signup" 
+                        href="/signup?role=TEACHER" 
                         onClick={() => setShowRegisterMenu(false)} 
                         className="block p-2.5 text-text-sec hover:text-brand-secondary hover:bg-bg-hover rounded-lg text-sm transition font-medium"
                       >
                        {isBengali ? "শিক্ষক নিবন্ধন" : "Teacher Register"}
                       </Link>
                       <Link 
-                        href="/guardian/signup" 
+                        href="/signup?role=GUARDIAN" 
                         onClick={() => setShowRegisterMenu(false)} 
                         className="block p-2.5 text-text-sec hover:text-brand-secondary hover:bg-bg-hover rounded-lg text-sm transition font-medium"
                       >
@@ -1044,7 +1044,7 @@ export default function Home() {
               >
                 {currentLang.enterPortal}
               </button>
-              <Link href="/student/signup" className="flex-1 text-center bg-bg-alt hover:bg-bg-hover text-text-sec py-2.5 rounded-lg text-xs border border-border-main transition">
+              <Link href="/signup?role=STUDENT" className="flex-1 text-center bg-bg-alt hover:bg-bg-hover text-text-sec py-2.5 rounded-lg text-xs border border-border-main transition">
                 {currentLang.signUpCTA}
               </Link>
             </div>
@@ -1080,7 +1080,7 @@ export default function Home() {
               >
                 {currentLang.enterPortal}
               </button>
-              <Link href="/teacher/signup" className="flex-1 text-center bg-bg-alt hover:bg-bg-hover text-text-sec py-2.5 rounded-lg text-xs border border-border-main transition">
+              <Link href="/signup?role=TEACHER" className="flex-1 text-center bg-bg-alt hover:bg-bg-hover text-text-sec py-2.5 rounded-lg text-xs border border-border-main transition">
                 {currentLang.signUpCTA}
               </Link>
             </div>
@@ -1116,7 +1116,7 @@ export default function Home() {
               >
                 {currentLang.enterPortal}
               </button>
-              <Link href="/guardian/signup" className="flex-1 text-center bg-bg-alt hover:bg-bg-hover text-text-sec py-2.5 rounded-lg text-xs border border-border-main transition">
+              <Link href="/signup?role=GUARDIAN" className="flex-1 text-center bg-bg-alt hover:bg-bg-hover text-text-sec py-2.5 rounded-lg text-xs border border-border-main transition">
                 {currentLang.signUpCTA}
               </Link>
             </div>

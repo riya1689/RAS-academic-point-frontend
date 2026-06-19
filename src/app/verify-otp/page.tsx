@@ -8,6 +8,7 @@ function VerifyOtpContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -19,6 +20,10 @@ function VerifyOtpContent() {
       setEmail(emailParam);
     } else {
       router.push("/login");
+    }
+    const roleParam = searchParams.get("role");
+    if (roleParam) {
+      setRole(roleParam);
     }
   }, [searchParams, router]);
 
@@ -64,9 +69,12 @@ function VerifyOtpContent() {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      if (!response.data.user.role) {
+      if (!response.data.user.role || response.data.user.role === "UNASSIGNED") {
         setTimeout(() => {
-          router.push(`/complete-profile?userId=${response.data.user.id}`);
+          const redirectUrl = `/complete-profile?userId=${response.data.user.id}${
+            role ? `&role=${encodeURIComponent(role)}` : ""
+          }`;
+          router.push(redirectUrl);
         }, 1500);
       } else {
         setTimeout(() => {

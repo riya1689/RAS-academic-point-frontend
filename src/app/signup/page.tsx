@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/lib/api";
+import toast from "react-hot-toast";
 
-export default function LoginPage() {
+function SignupContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const role = searchParams.get("role") || "";
+  
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,38 +22,29 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await api.post("/auth/login", { email, password });
+      const response = await api.post("/auth/signup", {
+        name,
+        email,
+        password,
+      });
 
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-
-      const params = new URLSearchParams(window.location.search);
-      const redirectParam = params.get("redirect");
-      const classIdParam = params.get("classId");
-
-      if (!response.data.user.role || response.data.user.role === "UNASSIGNED") {
-        router.push(`/complete-profile?userId=${response.data.user.id}`);
-      } else if (redirectParam === "enroll" && classIdParam) {
-        router.push(`/?enroll=${classIdParam}`);
-      } else {
-        router.push("/dashboard");
-      }
+      toast.success("Account created! Please verify your email.");
+      const redirectUrl = `/verify-otp?email=${encodeURIComponent(email)}${
+        role ? `&role=${encodeURIComponent(role)}` : ""
+      }`;
+      router.push(redirectUrl);
     } catch (err: any) {
-      if (err.response && err.response.status === 403) {
-        router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
-      } else {
-        setError(
-          err.response?.data?.message ||
-            "Log in failed. Please try again."
-        );
-      }
+      setError(
+        err.response?.data?.message || "Sign up failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleLogin = () => {
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "https://ras-ems-backend.vercel.app/api";
+    const backendUrl =
+      process.env.NEXT_PUBLIC_API_URL || "https://ras-ems-backend.vercel.app/api";
     window.location.href = `${backendUrl}/auth/signin/google`;
   };
 
@@ -59,9 +55,7 @@ export default function LoginPage() {
           RAS Academic Point
         </h2>
 
-        <p className="text-gray-400 text-center text-sm mb-6">
-          Login
-        </p>
+        <p className="text-gray-400 text-center text-sm mb-6">Create Account</p>
 
         {error && (
           <div className="bg-red-500/20 border border-red-500 text-red-200 p-3 rounded-lg text-sm mb-4 text-center">
@@ -72,9 +66,22 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs uppercase font-bold text-gray-300 mb-1">
+              Full Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+              placeholder="John Doe"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs uppercase font-bold text-gray-300 mb-1">
               Email Address
             </label>
-
             <input
               type="email"
               value={email}
@@ -89,7 +96,6 @@ export default function LoginPage() {
             <label className="block text-xs uppercase font-bold text-gray-300 mb-1">
               Password
             </label>
-
             <input
               type="password"
               value={password}
@@ -103,9 +109,9 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
           >
-            {loading ? "Loading..." : "Login"}
+            {loading ? "Loading..." : "Sign Up"}
           </button>
         </form>
 
@@ -113,7 +119,6 @@ export default function LoginPage() {
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-white/10"></div>
           </div>
-
           <span className="relative bg-slate-800 px-3 text-xs text-gray-400">
             Or
           </span>
@@ -142,20 +147,24 @@ export default function LoginPage() {
               d="M12 23c3.24 0 5.97-1.07 7.96-2.91l-3.6-2.79c-1-.67-2.28-1.07-3.96-1.07-3.15 0-5.82-2.65-6.79-5.76l-3.97 3.08C3.2 19.46 7.24 23 12 23z"
             />
           </svg>
-
-          Log in with Google
+          Sign up with Google
         </button>
 
         <div className="mt-6 text-center text-sm text-gray-400">
-          Create a new account:
-
-          <div className="flex flex-wrap justify-center gap-3 mt-2 font-medium">
-            <a href="/signup" className="text-blue-400 hover:underline">
-              Sign Up
-            </a>
-          </div>
+          Already have an account?{" "}
+          <a href="/login" className="text-blue-400 hover:underline font-medium">
+            Log in
+          </a>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white font-sans">Loading signup...</div>}>
+      <SignupContent />
+    </Suspense>
   );
 }

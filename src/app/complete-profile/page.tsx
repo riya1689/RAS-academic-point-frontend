@@ -30,6 +30,10 @@ function CompleteProfileContent() {
     } else {
       router.push("/login");
     }
+    const roleParam = searchParams.get("role");
+    if (roleParam && ["STUDENT", "TEACHER", "GUARDIAN"].includes(roleParam.toUpperCase())) {
+      setRole(roleParam.toUpperCase());
+    }
   }, [searchParams, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,40 +89,16 @@ function CompleteProfileContent() {
           </div>
 
           {role === "STUDENT" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs uppercase font-bold text-gray-300 mb-1">Class (Class)</label>
-                <input name="className" type="text" onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white" required />
-              </div>
-              <div>
-                <label className="block text-xs uppercase font-bold text-gray-300 mb-1">Roll (Roll)</label>
-                <input name="roll" type="text" onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white" required />
-              </div>
-              <div>
-                <label className="block text-xs uppercase font-bold text-gray-300 mb-1">Department (Department)</label>
-                <input name="department" type="text" onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white" required />
-              </div>
-              <div>
-                <label className="block text-xs uppercase font-bold text-gray-300 mb-1">School/College (School/College)</label>
-                <input name="schoolName" type="text" onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white" required />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs uppercase font-bold text-gray-300 mb-1">Phone Number (Phone Number)</label>
-                <input name="phone" type="text" onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white" required />
-              </div>
+            <div>
+              <label className="block text-xs uppercase font-bold text-gray-300 mb-1">Institution Name</label>
+              <input name="schoolName" type="text" onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500" required />
             </div>
           )}
 
           {role === "TEACHER" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs uppercase font-bold text-gray-300 mb-1">Department (Department)</label>
-                <input name="department" type="text" onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white" required />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs uppercase font-bold text-gray-300 mb-1">Educational Qualification (Educational Qualification)</label>
-                <input name="qualification" type="text" onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white" required />
-              </div>
+            <div>
+              <label className="block text-xs uppercase font-bold text-gray-300 mb-1">Department</label>
+              <input name="department" type="text" onChange={handleInputChange} className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500" required />
             </div>
           )}
 
