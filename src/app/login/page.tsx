@@ -22,8 +22,14 @@ export default function LoginPage() {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
+      const params = new URLSearchParams(window.location.search);
+      const redirectParam = params.get("redirect");
+      const classIdParam = params.get("classId");
+
       if (!response.data.user.role) {
         router.push(`/complete-profile?userId=${response.data.user.id}`);
+      } else if (redirectParam === "enroll" && classIdParam) {
+        router.push(`/?enroll=${classIdParam}`);
       } else {
         router.push("/dashboard");
       }

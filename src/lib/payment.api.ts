@@ -77,6 +77,11 @@ export async function createCheckoutSession(month: string, amount: number): Prom
   return response.data;
 }
 
+export async function createEnrollmentCheckoutSession(classId: string, amount: number): Promise<{ sessionId: string; checkoutUrl: string }> {
+  const response = await api.post("/payments/enroll/checkout", { classId, amount });
+  return response.data;
+}
+
 // Teacher APIs
 export async function getSalaryLogs(): Promise<{ salaryLogs: SalaryLog[] }> {
   const response = await api.get("/payments/salary/my");

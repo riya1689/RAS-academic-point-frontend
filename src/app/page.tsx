@@ -12,6 +12,7 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import clsx from "clsx";
 import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
+import { createEnrollmentCheckoutSession } from "../lib/payment.api";
 
 // English and Bengali Translations
 const t = {
@@ -80,7 +81,10 @@ const t = {
     notifications: "Notifications",
     noNotifications: "No new notifications.",
     markRead: "Mark all as read",
-    close: "Close"
+    close: "Close",
+    enrollNow: "Enroll Now",
+    enterClass: "Enter Class",
+    knowDetails: "Know Details"
   },
   bn: {
     logo: "রাস একাডেমিক পয়েন্ট",
@@ -147,7 +151,10 @@ const t = {
     notifications: "নোটিফিকেশন সমূহ",
     noNotifications: "কোনো নতুন নোটিফিকেশন নেই।",
     markRead: "পঠিত হিসেবে চিহ্নিত করুন",
-    close: "বন্ধ করুন"
+    close: "বন্ধ করুন",
+    enrollNow: "ভর্তি হোন",
+    enterClass: "ক্লাসে প্রবেশ করুন",
+    knowDetails: "বিস্তারিত জানুন"
   }
 };
 
@@ -165,7 +172,10 @@ const classData = [
     scheduleEn: "Mon, Wed, Fri - 04:00 PM to 06:00 PM",
     scheduleBn: "সোম, বুধ, শুক্র - বিকাল ০৪:০০ থেকে সন্ধ্যা ০৬:০০",
     beamColor: "#3b82f6",
-    bgClass: "bg-blue-50/40 dark:bg-blue-950/10 border-blue-100 dark:border-blue-900/20"
+    bgClass: "bg-blue-50/40 dark:bg-blue-950/10 border-blue-100 dark:border-blue-900/20",
+    priceEn: "2,000 BDT",
+    priceBn: "২,০০০ টাকা",
+    amount: 2000
   },
   {
     id: "class-9",
@@ -180,7 +190,10 @@ const classData = [
     scheduleEn: "Sat, Sun, Tue - 03:30 PM to 05:30 PM",
     scheduleBn: "শনি, রবি, মঙ্গল - দুপুর ০৩:৩০ থেকে বিকাল ০৫:৩০",
     beamColor: "#f97316",
-    bgClass: "bg-orange-50/40 dark:bg-orange-950/10 border-orange-100 dark:border-orange-900/20"
+    bgClass: "bg-orange-50/40 dark:bg-orange-950/10 border-orange-100 dark:border-orange-900/20",
+    priceEn: "2,500 BDT",
+    priceBn: "২,৫০০ টাকা",
+    amount: 2500
   },
   {
     id: "ssc-batch",
@@ -195,7 +208,10 @@ const classData = [
     scheduleEn: "Daily Class & Exams - 02:00 PM to 05:00 PM",
     scheduleBn: "প্রতিদিন ক্লাস ও পরীক্ষা - দুপুর ০২:০০ থেকে বিকাল ০৫:০০",
     beamColor: "#10b981",
-    bgClass: "bg-emerald-50/40 dark:bg-emerald-950/10 border-emerald-100 dark:border-emerald-900/20"
+    bgClass: "bg-emerald-50/40 dark:bg-emerald-950/10 border-emerald-100 dark:border-emerald-900/20",
+    priceEn: "3,000 BDT",
+    priceBn: "৩,০০০ টাকা",
+    amount: 3000
   }
 ];
 
@@ -370,6 +386,36 @@ export default function Home() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  const [isProcessingEnroll, setIsProcessingEnroll] = useState<string | null>(null);
+
+  const handleEnroll = async (classId: string, amount: number) => {
+    if (!token || !user) {
+      toast.error(isBengali ? "ভর্তি হতে দয়া করে প্রথমে লগইন করুন।" : "Please log in first to enroll.");
+      router.push(`/login?redirect=enroll&classId=${classId}`);
+      return;
+    }
+
+    if (user.role !== "STUDENT") {
+      toast.error(isBengali ? "শুধুমাত্র শিক্ষার্থীরা কোর্সে ভর্তি হতে পারবে।" : "Only students can enroll in courses.");
+      return;
+    }
+
+    try {
+      setIsProcessingEnroll(classId);
+      const data = await createEnrollmentCheckoutSession(classId, amount);
+      if (data.checkoutUrl) {
+        toast.loading(isBengali ? "পেমেন্ট গেটওয়েতে রিডাইরেক্ট করা হচ্ছে..." : "Redirecting to secure payment portal...");
+        window.location.href = data.checkoutUrl;
+      } else {
+        toast.error(isBengali ? "পেমেন্ট সেশন তৈরি করতে ব্যর্থ হয়েছে।" : "Failed to create checkout session.");
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || (isBengali ? "সার্ভার ত্রুটি ঘটেছে।" : "Internal server error occurred."));
+    } finally {
+      setIsProcessingEnroll(null);
+    }
+  };
+
   useEffect(() => {
     if (isInView) {
       animate(0, 1, {
@@ -510,6 +556,22 @@ export default function Home() {
       stopSlideTimer();
     };
   }, []);
+
+  useEffect(() => {
+    if (loading || !token || !user) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const enrollClassId = params.get("enroll");
+    if (enrollClassId) {
+      const match = classData.find(c => c.id === enrollClassId);
+      if (match) {
+        // Remove parameter from URL first to prevent loop on reload
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+        handleEnroll(match.id, match.amount);
+      }
+    }
+  }, [loading, token, user]);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -1118,13 +1180,31 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="p-6 pt-0">
-                <Link 
-                  href={`/classes/${c.id}`}
-                  className="block w-full text-center bg-brand-primary hover:bg-brand-primary-hover text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer"
-                >
-                  {currentLang.classCardDetails}
-                </Link>
+              <div className="p-6 pt-0 flex gap-3">
+                {user?.role === "STUDENT" && (user.enrolledClassIds || []).includes(c.id) ? (
+                  <Link 
+                    href="/dashboard/student"
+                    className="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer"
+                  >
+                    {currentLang.enterClass}
+                  </Link>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => handleEnroll(c.id, c.amount)}
+                      disabled={isProcessingEnroll === c.id}
+                      className="flex-1 text-center bg-brand-primary hover:bg-brand-primary-hover text-white font-bold py-2.5 rounded-xl text-xs transition cursor-pointer disabled:opacity-50 font-sans"
+                    >
+                      {isProcessingEnroll === c.id ? (isBengali ? "প্রসেসিং..." : "Processing...") : currentLang.enrollNow}
+                    </button>
+                    <Link 
+                      href={`/classes/${c.id}`}
+                      className="flex-1 text-center bg-bg-alt hover:bg-bg-hover text-text-sec font-bold py-2.5 rounded-xl text-xs border border-border-main transition cursor-pointer flex items-center justify-center"
+                    >
+                      {currentLang.knowDetails}
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           ))}

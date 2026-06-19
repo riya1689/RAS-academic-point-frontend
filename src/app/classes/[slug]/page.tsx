@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, Clock, Award, Check, Globe, Sun, Moon } from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
+import { createEnrollmentCheckoutSession } from "../../../lib/payment.api";
 
 const t = {
   en: {
@@ -21,7 +23,9 @@ const t = {
     feature1: "Experienced Teachers",
     feature2: "Monthly Prep Exams",
     feature3: "Digital Study Materials",
-    feature4: "Real-time Progress Tracking"
+    feature4: "Real-time Progress Tracking",
+    enrollNow: "Enroll Now",
+    enterClass: "Enter Class"
   },
   bn: {
     back: "হোমে ফিরে যান",
@@ -32,13 +36,15 @@ const t = {
     admission: "ভর্তি সংক্রান্ত তথ্য",
     admissionDesc: "ভর্তি চলছে। মাসিক টিউশন ফি: ১৫০০ টাকা। রেজিষ্ট্রেশন করতে হেল্প ডেস্কে যোগাযোগ করুন।",
     teacherInfo: "শিক্ষক মণ্ডলী",
-    teacherDesc: "বুয়েট, ডিএমসি এবং ঢাবির সেরা গ্রাজুয়েটদের দ্বারা ক্লাস পরিচালিত হয় যাদের ৫ বছরের বেশি শিক্ষকতার অভিজ্ঞতা রয়েছে।",
+    teacherDesc: "ক্লাসের সংখ্যা বাড়ানো হয়েছে এবং দক্ষ বুয়েট, ডিএমসি ও ঢাবি গ্রাজুয়েটদের দ্বারা পরিচালিত হয়।",
     contactHelp: "ভর্তি ডেস্কে যোগাযোগ করুন",
     logo: "রাস একাডেমিক পয়েন্ট",
     feature1: "অভিজ্ঞ শিক্ষক মণ্ডলী",
     feature2: "মাসিক প্রস্তুতি পরীক্ষা",
     feature3: "ডিজিটাল স্টাডি ম্যাটেরিয়ালস",
-    feature4: "রিয়েল-টাইম প্রগ্রেস ট্র্যাকিং"
+    feature4: "রিয়েল-টাইম প্রগ্রেস ট্র্যাকিং",
+    enrollNow: "ভর্তি হোন",
+    enterClass: "ক্লাসে প্রবেশ করুন"
   }
 };
 
@@ -52,7 +58,10 @@ const classData: Record<string, any> = {
     subjectsEn: "Mathematics, Science, English, ICT, Bangla",
     subjectsBn: "গণিত, বিজ্ঞান, ইংরেজি, আইসিটি, বাংলা",
     scheduleEn: "Mon, Wed, Fri - 04:00 PM to 06:00 PM",
-    scheduleBn: "সোম, বুধ, শুক্র - বিকাল ০৪:০০ থেকে সন্ধ্যা ০৬:০০"
+    scheduleBn: "সোম, বুধ, শুক্র - বিকাল ০৪:০০ থেকে সন্ধ্যা ০৬:০০",
+    priceEn: "2,000 BDT",
+    priceBn: "২,০০০ টাকা",
+    amount: 2000
   },
   "class-9": {
     nameEn: "Class 9 Science & Commerce",
@@ -63,7 +72,10 @@ const classData: Record<string, any> = {
     subjectsEn: "Physics, Chemistry, Higher Math, Biology, Accounting",
     subjectsBn: "পদার্থবিজ্ঞান, রসায়ন, উচ্চতর গণিত, জীববিজ্ঞান, হিসাববিজ্ঞান",
     scheduleEn: "Sat, Sun, Tue - 03:30 PM to 05:30 PM",
-    scheduleBn: "শনি, রবি, মঙ্গল - দুপুর ০৩:৩০ থেকে বিকাল ০৫:৩০"
+    scheduleBn: "শনি, রবি, মঙ্গল - দুপুর ০৩:৩০ থেকে বিকাল ০৫:৩০",
+    priceEn: "2,500 BDT",
+    priceBn: "২,৫০০ টাকা",
+    amount: 2500
   },
   "ssc-batch": {
     nameEn: "SSC Special Target Batch",
@@ -74,7 +86,10 @@ const classData: Record<string, any> = {
     subjectsEn: "All Board Compulsory & Science/Commerce Group Subjects",
     subjectsBn: "সকল বোর্ড আবশ্যিক এবং বিজ্ঞান/ব্যবসায় শিক্ষা গ্রুপ ভিত্তিক বিষয় সমূহ",
     scheduleEn: "Daily Class & Mock Exams - 02:00 PM to 05:00 PM",
-    scheduleBn: "প্রতিদিন ক্লাস ও মক পরীক্ষা - দুপুর ০২:০০ থেকে বিকাল ০৫:০০"
+    scheduleBn: "প্রতিদিন ক্লাস ও মক পরীক্ষা - দুপুর ০২:০০ থেকে বিকাল ০৫:০০",
+    priceEn: "3,000 BDT",
+    priceBn: "৩,০০০ টাকা",
+    amount: 3000
   }
 };
 
@@ -85,6 +100,9 @@ export default function ClassDetailsPage() {
 
   const [isBengali, setIsBengali] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [isProcessingEnroll, setIsProcessingEnroll] = useState(false);
 
   useEffect(() => {
     // Read local storage preferences
@@ -93,6 +111,11 @@ export default function ClassDetailsPage() {
 
     const storedTheme = localStorage.getItem("isDarkMode");
     if (storedTheme === "true") setIsDarkMode(true);
+
+    const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+    if (storedToken) setToken(storedToken);
+    if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
 
   useEffect(() => {
@@ -113,6 +136,34 @@ export default function ClassDetailsPage() {
     const nextTheme = !isDarkMode;
     setIsDarkMode(nextTheme);
     localStorage.setItem("isDarkMode", String(nextTheme));
+  };
+
+  const handleEnroll = async (classId: string, amount: number) => {
+    if (!token || !user) {
+      toast.error(isBengali ? "ভর্তি হতে দয়া করে প্রথমে লগইন করুন।" : "Please log in first to enroll.");
+      router.push(`/login?redirect=enroll&classId=${classId}`);
+      return;
+    }
+
+    if (user.role !== "STUDENT") {
+      toast.error(isBengali ? "শুধুমাত্র শিক্ষার্থীরা কোর্সে ভর্তি হতে পারবে।" : "Only students can enroll in courses.");
+      return;
+    }
+
+    try {
+      setIsProcessingEnroll(true);
+      const data = await createEnrollmentCheckoutSession(classId, amount);
+      if (data.checkoutUrl) {
+        toast.loading(isBengali ? "পেমেন্ট গেটওয়েতে রিডাইরেক্ট করা হচ্ছে..." : "Redirecting to secure payment portal...");
+        window.location.href = data.checkoutUrl;
+      } else {
+        toast.error(isBengali ? "পেমেন্ট সেশন তৈরি করতে ব্যর্থ হয়েছে।" : "Failed to create checkout session.");
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || (isBengali ? "সার্ভার ত্রুটি ঘটেছে।" : "Internal server error occurred."));
+    } finally {
+      setIsProcessingEnroll(false);
+    }
   };
 
   const selectedClass = classData[slug];
@@ -136,6 +187,7 @@ export default function ClassDetailsPage() {
 
   return (
     <div className={`min-h-screen transition-colors duration-200 font-sans ${isDarkMode ? "dark" : ""} bg-bg-main text-text-main`}>
+      <Toaster position="top-right" toastOptions={{ style: { background: "#0f172a", color: "#f8fafc", border: "1px solid rgba(255,255,255,0.1)" } }} />
       
       {/* Dynamic Header */}
       <header className="sticky top-0 z-40 backdrop-blur-md border-b bg-bg-surface/80 border-border-main">
@@ -258,15 +310,27 @@ export default function ClassDetailsPage() {
                 <span>{currentLang.admission}</span>
               </h3>
               <p className="text-xs text-text-sec leading-relaxed">
-                {currentLang.admissionDesc}
+                {isBengali
+                  ? `ভর্তি চলছে। এই কোর্সের মোট ফি: ${selectedClass.priceBn}। আজই যুক্ত হতে নিচের বাটনে ক্লিক করুন।`
+                  : `Admission is open. Total course fee: ${selectedClass.priceEn}. Click the button below to enroll.`}
               </p>
               
-              <Link 
-                href="/#contact" 
-                className="block w-full text-center bg-brand-primary hover:bg-brand-primary-hover text-white font-bold py-3 rounded-xl text-xs transition shadow-md"
-              >
-                {currentLang.contactHelp}
-              </Link>
+              {user?.role === "STUDENT" && (user.enrolledClassIds || []).includes(slug) ? (
+                <Link 
+                  href="/dashboard/student" 
+                  className="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-xs transition shadow-md cursor-pointer flex items-center justify-center font-sans"
+                >
+                  {currentLang.enterClass}
+                </Link>
+              ) : (
+                <button 
+                  onClick={() => handleEnroll(slug, selectedClass.amount)}
+                  disabled={isProcessingEnroll}
+                  className="block w-full text-center bg-brand-primary hover:bg-brand-primary-hover text-white font-bold py-3 rounded-xl text-xs transition shadow-md cursor-pointer disabled:opacity-50 font-sans"
+                >
+                  {isProcessingEnroll ? (isBengali ? "প্রসেসিং..." : "Processing...") : currentLang.enrollNow}
+                </button>
+              )}
             </div>
           </div>
         </div>
