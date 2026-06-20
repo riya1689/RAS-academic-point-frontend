@@ -1,13 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { Plus, BookOpen, Calendar, CheckCircle2, XCircle, ArrowRight, User, CreditCard, DollarSign, Wallet } from "lucide-react";
 import { getTuitionLogs, createCheckoutSession, getMyEnrollments, verifyEnrollmentSession } from "../../../lib/payment.api";
 
-export default function StudentDashboard() {
+function StudentDashboardContent() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"classroom" | "tuition">("classroom");
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get("tab") || "classroom";
 
   const [tuitionLogs, setTuitionLogs] = useState<any[]>([]);
   const [loadingTuition, setLoadingTuition] = useState(false);
@@ -15,8 +16,6 @@ export default function StudentDashboard() {
 
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [loadingEnrollments, setLoadingEnrollments] = useState(false);
-
-
 
   const fetchTuitionLogs = async () => {
     try {
@@ -52,12 +51,10 @@ export default function StudentDashboard() {
         if (params.get("payment") === "success") {
           const month = params.get("month");
           toast.success(`Tuition fee for ${month} has been paid successfully!`, { duration: 5000 });
-          window.history.replaceState({}, document.title, window.location.pathname);
-          setActiveTab("tuition");
+          router.replace("/dashboard/student?tab=tuition");
         } else if (params.get("payment") === "cancel") {
           toast.error("Stripe payment was cancelled.");
-          window.history.replaceState({}, document.title, window.location.pathname);
-          setActiveTab("tuition");
+          router.replace("/dashboard/student?tab=tuition");
         } else if (params.get("enrollment") === "success") {
           const classId = params.get("classId");
           const sessionId = params.get("session_id");
@@ -71,16 +68,13 @@ export default function StudentDashboard() {
             }
           }
           toast.success(`Successfully enrolled in ${classId}! Your dashboard has been updated.`, { duration: 5000 });
-          window.history.replaceState({}, document.title, window.location.pathname);
-          fetchEnrollments();
+          router.replace("/dashboard/student");
         }
       }
     };
 
     verifySessionIfNeeded();
   }, []);
-
-
 
   const handleCheckout = async (month: string, amount: number) => {
     try {
@@ -106,38 +100,14 @@ export default function StudentDashboard() {
           <h2 className="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">Student Portal</h2>
           <p className="text-slate-400 text-sm mt-1">Join classrooms, view class resources, track attendance, and pay tuition fees securely.</p>
         </div>
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <button onClick={() => router.push("/dashboard/student/join-classroom")} className="flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold px-5 py-3 rounded-xl shadow-lg transition duration-200 cursor-pointer transform hover:scale-[1.02] text-sm">
-            <Plus size={18} />
-            <span>Join Classroom</span>
-          </button>
-        </div>
-      </div>
-
-      <div className="flex border-b border-slate-800">
-        <button
-          onClick={() => setActiveTab("classroom")}
-          className={`px-6 py-3 font-semibold text-sm transition duration-150 border-b-2 -mb-[2px] ${
-            activeTab === "classroom"
-              ? "border-emerald-500 text-emerald-400"
-              : "border-transparent text-slate-400 hover:text-slate-200"
-          }`}
-        >
-          Classrooms & Attendance
-        </button>
-        <button
-          onClick={() => {
-            setActiveTab("tuition");
-            fetchTuitionLogs();
-          }}
-          className={`px-6 py-3 font-semibold text-sm transition duration-150 border-b-2 -mb-[2px] ${
-            activeTab === "tuition"
-              ? "border-emerald-500 text-emerald-400"
-              : "border-transparent text-slate-400 hover:text-slate-200"
-          }`}
-        >
-          Tuition Fees & Payments
-        </button>
+        {activeTab === "classroom" && (
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <button onClick={() => router.push("/dashboard/student/join-classroom")} className="flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold px-5 py-3 rounded-xl shadow-lg transition duration-200 cursor-pointer transform hover:scale-[1.02] text-sm">
+              <Plus size={18} />
+              <span>Join Classroom</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {activeTab === "classroom" ? (
@@ -282,8 +252,18 @@ export default function StudentDashboard() {
           )}
         </div>
       )}
-
-
     </div>
+  );
+}
+
+export default function StudentDashboard() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-400"></div>
+      </div>
+    }>
+      <StudentDashboardContent />
+    </Suspense>
   );
 }
