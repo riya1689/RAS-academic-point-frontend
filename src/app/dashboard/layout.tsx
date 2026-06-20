@@ -267,30 +267,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
       <main className="flex-1 p-6 md:p-8 overflow-y-auto max-w-7xl mx-auto w-full animate-fadeIn">
-        {user?.role === "STUDENT" && (!user.enrolledClassIds || user.enrolledClassIds.length === 0) ? (
-          <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6 bg-slate-900/30 border border-slate-800 rounded-3xl backdrop-blur-md space-y-6 max-w-2xl mx-auto my-12">
-            <div className="w-20 h-20 bg-rose-500/10 rounded-full flex items-center justify-center text-rose-500 border border-rose-500/20 shadow-lg mb-2">
-              <ShieldAlert size={40} />
-            </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-rose-400 to-amber-500 bg-clip-text text-transparent">
-              {localStorage.getItem("isBengali") !== "false" ? "দয়া করে প্রথমে ভর্তি সম্পন্ন করুন" : "Please Enroll First"}
-            </h2>
-            <p className="text-slate-400 text-sm max-w-md leading-relaxed">
-              {localStorage.getItem("isBengali") !== "false"
-                ? "আপনি সফলভাবে লগইন করেছেন, কিন্তু এখনও কোনো ক্লাসে ভর্তি হননি। ড্যাশবোর্ড, ওয়ান-টু-ওয়ান সেশন, প্রগ্রেস ট্র্যাকিং ও রেজাল্ট শিট দেখতে প্রথমে আমাদের হোমপেজ থেকে নির্দিষ্ট ক্লাসে ভর্তি সম্পন্ন করুন।"
-                : "You are logged in, but you haven't enrolled in any academic class batch yet. Please enroll in a class program from our homepage first to unlock support sessions, classrooms, results, and other features."}
-            </p>
-            <Link 
-              href="/#classes" 
-              className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-750 text-white font-bold px-6 py-3.5 rounded-xl text-sm transition shadow-lg transform hover:scale-[1.02] active:scale-95 cursor-pointer font-sans"
-            >
-              <span>{localStorage.getItem("isBengali") !== "false" ? "ভর্তি হতে হোমপেজে যান" : "Go to Homepage to Enroll"}</span>
-              <ArrowRight size={16} />
-            </Link>
-          </div>
-        ) : (
-          children
-        )}
+        {children}
       </main>
     </div>
   );
