@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Plus, BookOpen, Calendar, CheckCircle2, XCircle, ArrowRight, User, CreditCard, DollarSign, Wallet } from "lucide-react";
 import { getStudentClassrooms, joinClassroom, getStudentAttendance } from "../../../lib/classroom.api";
-import { getTuitionLogs, createCheckoutSession, getMyEnrollments } from "../../../lib/payment.api";
+import { getTuitionLogs, createCheckoutSession, getMyEnrollments, verifyEnrollmentSession } from "../../../lib/payment.api";
 
 export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState<"classroom" | "tuition">("classroom");
@@ -63,19 +63,38 @@ export default function StudentDashboard() {
     fetchTuitionLogs();
     fetchEnrollments();
 
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("payment") === "success") {
-        const month = params.get("month");
-        toast.success(`Tuition fee for ${month} has been paid successfully!`, { duration: 5000 });
-        window.history.replaceState({}, document.title, window.location.pathname);
-        setActiveTab("tuition");
-      } else if (params.get("payment") === "cancel") {
-        toast.error("Stripe payment was cancelled.");
-        window.history.replaceState({}, document.title, window.location.pathname);
-        setActiveTab("tuition");
+    const verifySessionIfNeeded = async () => {
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("payment") === "success") {
+          const month = params.get("month");
+          toast.success(`Tuition fee for ${month} has been paid successfully!`, { duration: 5000 });
+          window.history.replaceState({}, document.title, window.location.pathname);
+          setActiveTab("tuition");
+        } else if (params.get("payment") === "cancel") {
+          toast.error("Stripe payment was cancelled.");
+          window.history.replaceState({}, document.title, window.location.pathname);
+          setActiveTab("tuition");
+        } else if (params.get("enrollment") === "success") {
+          const classId = params.get("classId");
+          const sessionId = params.get("session_id");
+          if (sessionId) {
+            try {
+              toast.loading("Verifying your enrollment...");
+              await verifyEnrollmentSession(sessionId);
+              toast.dismiss();
+            } catch (error) {
+              console.error(error);
+            }
+          }
+          toast.success(`Successfully enrolled in ${classId}! Your dashboard has been updated.`, { duration: 5000 });
+          window.history.replaceState({}, document.title, window.location.pathname);
+          fetchEnrollments();
+        }
       }
-    }
+    };
+
+    verifySessionIfNeeded();
   }, []);
 
   const handleJoinClassroom = async (e: React.FormEvent) => {

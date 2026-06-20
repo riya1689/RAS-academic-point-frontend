@@ -87,6 +87,11 @@ export async function getMyEnrollments(): Promise<{ enrollments: any[] }> {
   return response.data;
 }
 
+export async function verifyEnrollmentSession(sessionId: string): Promise<{ status: string }> {
+  const response = await api.get(`/payments/enrollments/verify-session?session_id=${sessionId}`);
+  return response.data;
+}
+
 // Teacher APIs
 export async function getSalaryLogs(): Promise<{ salaryLogs: SalaryLog[] }> {
   const response = await api.get("/payments/salary/my");
