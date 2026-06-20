@@ -209,7 +209,7 @@ export default function StudentDashboard() {
                         <span className="absolute bottom-3 left-4 z-20 font-black text-2xl text-white tracking-wide">{enr.classId}</span>
                      </div>
                      <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                       <p className="text-xs text-slate-400">Transaction ID: <span className="font-mono text-emerald-400 block mt-1">{enr.transactionId}</span></p>
+                       <p className="text-xs text-slate-400">Class Roll: <span className="font-mono text-emerald-400 block mt-1">{enr.classRoll}</span></p>
                        <button onClick={() => setIsModalOpen(true)} className="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black rounded-xl shadow-lg transition duration-200 flex justify-center items-center gap-2 cursor-pointer transform active:scale-95">
                          <BookOpen size={16} /> Enter Class
                        </button>
