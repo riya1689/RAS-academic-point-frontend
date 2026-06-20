@@ -82,6 +82,11 @@ export async function createEnrollmentCheckoutSession(classId: string, amount: n
   return response.data;
 }
 
+export async function getMyEnrollments(): Promise<{ enrollments: any[] }> {
+  const response = await api.get("/payments/enrollments/my");
+  return response.data;
+}
+
 // Teacher APIs
 export async function getSalaryLogs(): Promise<{ salaryLogs: SalaryLog[] }> {
   const response = await api.get("/payments/salary/my");

@@ -231,6 +231,22 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
                 <Trophy size={20} />
                 <span>Leaderboard</span>
               </button>
+              {user?.role === "STUDENT" && (
+                <>
+                  <button onClick={() => { setIsSidebarOpen(false); router.push("/dashboard/student/enrolled-classes"); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-150 ${pathname.includes("/dashboard/student/enrolled-classes") ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "hover:bg-slate-800/50 text-slate-400"}`}>
+                    <BookOpen size={20} />
+                    <span>Enrolled Classes</span>
+                  </button>
+                  <button onClick={() => { setIsSidebarOpen(false); router.push("/dashboard/student?tab=tuition"); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-150 ${currentTab === "tuition" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "hover:bg-slate-800/50 text-slate-400"}`}>
+                    <Wallet size={20} />
+                    <span>Tuition fees</span>
+                  </button>
+                  <button onClick={() => { setIsSidebarOpen(false); router.push("/dashboard/student/settings"); }} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition duration-150 ${pathname.includes("/dashboard/student/settings") ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "hover:bg-slate-800/50 text-slate-400"}`}>
+                    <ShieldAlert size={20} />
+                    <span>Settings</span>
+                  </button>
+                </>
+              )}
             </>
           )}
         </nav>

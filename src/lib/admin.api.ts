@@ -264,7 +264,7 @@ export async function cancelAdminBooking(id: string): Promise<any> {
 }
 
 // 6. Revenue & Finance details
-export async function getFinanceDetails(): Promise<{ finance: FinanceDetails; growthChart: GrowthChartData[] }> {
+export async function getFinanceDetails(): Promise<{ finance: FinanceDetails; growthChart: GrowthChartData[]; courseEnrollments: any[] }> {
   const response = await api.get("/admin/revenue/finance");
   return response.data;
 }

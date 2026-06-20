@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Plus, BookOpen, Calendar, CheckCircle2, XCircle, ArrowRight, User, CreditCard, DollarSign, Wallet } from "lucide-react";
 import { getStudentClassrooms, joinClassroom, getStudentAttendance } from "../../../lib/classroom.api";
-import { getTuitionLogs, createCheckoutSession } from "../../../lib/payment.api";
+import { getTuitionLogs, createCheckoutSession, getMyEnrollments } from "../../../lib/payment.api";
 
 export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState<"classroom" | "tuition">("classroom");
@@ -19,6 +19,9 @@ export default function StudentDashboard() {
   const [tuitionLogs, setTuitionLogs] = useState<any[]>([]);
   const [loadingTuition, setLoadingTuition] = useState(false);
   const [isPayingMonth, setIsPayingMonth] = useState<string | null>(null);
+
+  const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [loadingEnrollments, setLoadingEnrollments] = useState(false);
 
   const fetchClassrooms = async () => {
     try {
@@ -43,9 +46,22 @@ export default function StudentDashboard() {
     }
   };
 
+  const fetchEnrollments = async () => {
+    try {
+      setLoadingEnrollments(true);
+      const data = await getMyEnrollments();
+      setEnrollments(data.enrollments || []);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to load enrollments");
+    } finally {
+      setLoadingEnrollments(false);
+    }
+  };
+
   useEffect(() => {
     fetchClassrooms();
     fetchTuitionLogs();
+    fetchEnrollments();
 
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -155,7 +171,36 @@ export default function StudentDashboard() {
       {activeTab === "classroom" ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <h3 className="text-xl font-bold text-slate-300">My Classrooms</h3>
+            <h3 className="text-xl font-bold text-slate-300">My Enrolled Courses</h3>
+            {loadingEnrollments ? (
+              <div className="flex justify-center items-center py-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-400"></div>
+              </div>
+            ) : enrollments.length === 0 ? (
+               <div className="text-center py-8 bg-slate-900/25 border border-dashed border-slate-800 rounded-2xl">
+                 <p className="text-slate-500 text-sm">You haven't enrolled in any premium courses yet.</p>
+               </div>
+            ) : (
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                 {enrollments.map((enr) => (
+                   <div key={enr.id} className="group bg-slate-900/50 hover:bg-slate-900/80 border border-emerald-500/30 transition shadow-lg rounded-2xl overflow-hidden flex flex-col">
+                     <div className="h-32 w-full overflow-hidden bg-slate-800 flex items-center justify-center relative">
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent z-10"></div>
+                        <img src={`/images/${enr.classId.toLowerCase().replace(" ", "")}.jpg`} onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=2022&auto=format&fit=crop" }} alt={enr.classId} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+                        <span className="absolute bottom-3 left-4 z-20 font-black text-2xl text-white tracking-wide">{enr.classId}</span>
+                     </div>
+                     <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                       <p className="text-xs text-slate-400">Transaction ID: <span className="font-mono text-emerald-400 block mt-1">{enr.transactionId}</span></p>
+                       <button onClick={() => setIsModalOpen(true)} className="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black rounded-xl shadow-lg transition duration-200 flex justify-center items-center gap-2 cursor-pointer transform active:scale-95">
+                         <BookOpen size={16} /> Enter Class
+                       </button>
+                     </div>
+                   </div>
+                 ))}
+               </div>
+            )}
+
+            <h3 className="text-xl font-bold text-slate-300 mt-10">My Classrooms</h3>
             {isLoading ? (
               <div className="flex justify-center items-center py-20">
                 <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-emerald-400"></div>

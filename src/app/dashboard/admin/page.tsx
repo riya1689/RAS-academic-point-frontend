@@ -55,6 +55,7 @@ function AdminDashboardContent() {
   
   const [finance, setFinance] = useState<FinanceDetails | null>(null);
   const [growthChart, setGrowthChart] = useState<GrowthChartData[]>([]);
+  const [courseEnrollments, setCourseEnrollments] = useState<any[]>([]);
   const [tuitionRecords, setTuitionRecords] = useState<TuitionPaymentRecord[]>([]);
   const [salaryRecords, setSalaryRecords] = useState<SalaryRecord[]>([]);
   const [financeSubTab, setFinanceSubTab] = useState<"tuition" | "salary">("tuition");
@@ -172,6 +173,7 @@ function AdminDashboardContent() {
       
       setFinance(financeRes.finance || null);
       setGrowthChart(financeRes.growthChart || []);
+      setCourseEnrollments(financeRes.courseEnrollments || []);
 
       setSatisfaction(satisfactionRes.satisfaction || []);
       setSatisfactionTrend(satisfactionRes.trend || []);
@@ -1295,6 +1297,47 @@ function AdminDashboardContent() {
                   <span className="text-[9px] font-bold text-slate-500 truncate max-w-full mt-2 font-mono">{item.month.substring(0, 3)}</span>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Course Enrollments Ledger */}
+          <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-6 backdrop-blur-sm space-y-4">
+            <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider">Course Enrollments Revenue</h3>
+            <div className="overflow-x-auto">
+              {courseEnrollments.length === 0 ? (
+                <div className="text-center py-8 text-slate-500 text-sm">No course enrollments found.</div>
+              ) : (
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-800 bg-slate-950/40 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                      <th className="p-4">Student</th>
+                      <th className="p-4">Class</th>
+                      <th className="p-4">Transaction ID</th>
+                      <th className="p-4">Date</th>
+                      <th className="p-4">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/60 text-sm">
+                    {courseEnrollments.map((enrollment: any) => (
+                      <tr key={enrollment.id} className="hover:bg-slate-800/10 transition duration-150">
+                        <td className="p-4">
+                          <div className="font-bold text-slate-200">{enrollment.student?.user?.name || "Unknown"}</div>
+                          <div className="text-xs text-slate-500 font-mono">{enrollment.student?.user?.email || "No email"}</div>
+                        </td>
+                        <td className="p-4 font-bold text-slate-350">{enrollment.classId}</td>
+                        <td className="p-4">
+                          <div className="text-slate-300 font-mono text-xs truncate max-w-[150px]" title={enrollment.transactionId}>{enrollment.transactionId}</div>
+                          <div className="text-[10px] text-slate-500 font-mono">{enrollment.invoiceNumber}</div>
+                        </td>
+                        <td className="p-4 text-slate-400 font-mono text-xs">
+                          {new Date(enrollment.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="p-4 font-mono font-bold text-emerald-400">{enrollment.amountPaid} BDT</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>
