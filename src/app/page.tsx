@@ -130,7 +130,7 @@ const t = {
     skillVideos: "দক্ষতা উন্নয়ন মূলক ভিডিও",
     skillSub: "প্রেজেন্টেশন, সময় ব্যবস্থাপনা এবং সমালোচনামূলক চিন্তা আয়ত্ত করুন।",
     watchVideo: "ভিডিওটি দেখুন",
-    ourGallery: "ক্যাম্পাস গ্যালারি",
+    ourGallery: "গ্যালারি",
     gallerySub: "শিক্ষার্থীদের কৃতিত্ব, শিক্ষাসফর এবং ইন্টারঅ্যাক্টিভ ক্লাসের কিছু মুহূর্ত।",
     contactUs: "যোগাযোগ করুন",
     contactSub: "কোনো প্রশ্ন আছে? আমাদের লিখুন অথবা সরাসরি আমাদের শাখায় চলে আসুন।",
@@ -243,10 +243,10 @@ const programData = [
 ];
 
 const serviceData = [
-  { id: "teacher", icon: Award, image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&auto=format&fit=crop&q=80", titleEn: "Best Teacher Panel", titleBn: "সেরা শিক্ষক মন্ডলী", descEn: "Highly experienced mentors.", descBn: "দক্ষ ও অভিজ্ঞ শিক্ষক মন্ডলী।" },
+  { id: "teacher", icon: Award, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGVQxVR-1IHxfQzisUPQ7dP5Vv_k4N2ZUi3nkb39YX2sdah5QMbOht4w8a&s=10?w=600&auto=format&fit=crop&q=80", titleEn: "Best Teacher Panel", titleBn: "সেরা শিক্ষক মন্ডলী", descEn: "Highly experienced mentors.", descBn: "দক্ষ ও অভিজ্ঞ শিক্ষক মন্ডলী।" },
   { id: "support", icon: Clock, image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80", titleEn: "Daily Support Sessions", titleBn: "প্রতিদিনের সাপোর্ট সেশন", descEn: "Live queue doubt solving daily.", descBn: "লাইভ কিউতে প্রতিদিন ডাউট সলভিং।" },
-  { id: "one-one", icon: HelpCircle, image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&auto=format&fit=crop&q=80", titleEn: "1-to-1 Support Session", titleBn: "১:১ সাপোর্ট সেশন", descEn: "Private slots bookable directly.", descBn: "সরাসরি বুকিং যোগ্য প্রাইভেট স্লট।" },
-  { id: "monitor", icon: Shield, image: "https://images.unsplash.com/photo-1484820540004-14229fe36ca4?w=600&auto=format&fit=crop&q=80", titleEn: "Guardian Monitoring Panel", titleBn: "অভিভাবক মনিটরিং প্যানেল", descEn: "Track ward's attendance and grades.", descBn: "সন্তানের উপস্থিতি ও ফলাফল মনিটরিং।" },
+  { id: "one-one", icon: HelpCircle, image: "https://www.image2url.com/r2/default/images/1782181369401-12aca9b2-19a0-4e6f-9832-01a1d59dae9d.png?w=600&auto=format&fit=crop&q=80", titleEn: "1-to-1 Support Session", titleBn: "১:১ সাপোর্ট সেশন", descEn: "Private slots bookable directly.", descBn: "সরাসরি বুকিং যোগ্য প্রাইভেট স্লট।" },
+  { id: "monitor", icon: Shield, image: "https://www.image2url.com/r2/default/images/1782182938239-82500365-1028-4ec2-b74a-5273842441b2.png?w=600&auto=format&fit=crop&q=80", titleEn: "Guardian Monitoring Panel", titleBn: "অভিভাবক মনিটরিং প্যানেল", descEn: "Track ward's attendance and grades.", descBn: "সন্তানের উপস্থিতি ও ফলাফল মনিটরিং।" },
   { id: "progress", icon: BookOpenCheck, image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80", titleEn: "Online Progress Tracking", titleBn: "অনলাইন প্রগ্রেস ট্র্যাকিং", descEn: "Interactive visual attendance graphs.", descBn: "উন্নতি পর্যবেক্ষণে ভিজ্যুয়াল চার্ট।" },
   { id: "result", icon: FileText, image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&auto=format&fit=crop&q=80", titleEn: "Online Result Card", titleBn: "অনলাইন রেজাল্ট কার্ড", descEn: "Check written, MCQ & practical scores.", descBn: "লিখিত, এমসিকিউ ও প্র্যাক্টিক্যাল নম্বর দেখুন।" },
   { id: "doubt", icon: MessageSquare, image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&auto=format&fit=crop&q=80", titleEn: "Doubt Solving Support", titleBn: "প্রশ্ন সমাধান সাপোর্ট", descEn: "Submit questions to online teachers.", descBn: "অনলাইন শিক্ষকদের কাছে সমস্যা জমা দিন।" },
@@ -259,31 +259,31 @@ const videoData = [
 ];
 
 const galleryImages = [
-  "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=400&auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&auto=format&fit=crop&q=80",
+  "https://www.image2url.com/r2/default/images/1782186803915-757b30c7-e0ab-4edb-a427-f14b52b20828.png?w=400&auto=format&fit=crop&q=80",
+  "https://www.image2url.com/r2/default/images/1782181369401-12aca9b2-19a0-4e6f-9832-01a1d59dae9d.png?w=400&auto=format&fit=crop&q=80",
+  "https://www.image2url.com/r2/default/images/1782185989368-6f1445ce-20a3-46c7-b1f7-52b45bc56155.png?w=400&auto=format&fit=crop&q=80",
   "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&auto=format&fit=crop&q=80"
+  "https://www.bracu.ac.bd/sites/default/files/news-image/Study%20tours%20of%20Curzon%20Hall%2C%20Institute%20of%20Fine%20Arts%20and%20Panam%20Nagar%20by%20ARC%20101%20students%202.jpg?w=400&auto=format&fit=crop&q=80",
+  "https://i0.wp.com/pecpte.com/wp-content/uploads/2025/02/PTE-One-to-One-Coaching-in-Dhaka.jpg?resize=840%2C430&ssl=1?w=400&auto=format&fit=crop&q=80"
 ];
 
 const heroSlides = [
   {
     image: "/rasAcademicBanner.png?w=1200&auto=format&fit=crop&q=80",
     titleEn: "Empowering Students for Academic Excellence",
-    titleBn: "পড়ো তোমার প্রভুর নামে",
+    titleBn: "স্বপ্ন দেখো, প্রস্তুতি নাও এবং সফল হও",
     descEn: "RAS Academic Point is a leading coaching center specializing in Class 8, Class 9, and SSC preparation.",
-    descBn: "রাস একাডেমিক পয়েন্ট ক্লাস ৮, ক্লাস ৯ এবং এসএসসি প্রস্তুতির জন্য একটি শীর্ষস্থানীয় প্রতিষ্ঠান।"
+    descBn: "স্মার্ট পড়াশোনা, উজ্জ্বল ভবিষ্যৎ। শিক্ষার্থীদের সফলতার পথে আমরা।"
   },
   {
-    image: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=1200&auto=format&fit=crop&q=80",
+    image: "https://www.image2url.com/r2/default/images/1782181369401-12aca9b2-19a0-4e6f-9832-01a1d59dae9d.png?w=1200&auto=format&fit=crop&q=80",
     titleEn: "Daily Doubt Solving & Live Support Sessions",
     titleBn: "প্রতিদিনের ডাউট সলভিং এবং লাইভ সাপোর্ট সেশন",
     descEn: "Get real-time guidance from expert teachers with interactive queues.",
     descBn: "ইন্টারেক্টিভ কিউ সহ অভিজ্ঞ শিক্ষকদের কাছ থেকে রিয়েল-টাইম প্রশ্ন সমাধান।"
   },
   {
-    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1200&auto=format&fit=crop&q=80",
+    image: "https://www.image2url.com/r2/default/images/1782182938239-82500365-1028-4ec2-b74a-5273842441b2.png?w=1200&auto=format&fit=crop&q=80",
     titleEn: "Live Parent Monitoring Dashboard",
     titleBn: "অভিভাবকদের জন্য লাইভ মনিটরিং ড্যাশবোর্ড",
     descEn: "Track attendance, exam grades, and payments transparently.",
@@ -1021,7 +1021,7 @@ export default function Home() {
             {/* Hero Image */}
             <div className="h-[220px] overflow-hidden relative">
               <img 
-                src="https://img.magnific.com/premium-photo/photograph-12-15-age-indian-school-girl-boys-students-holding-books-clear-facial-features-white-background-ar-32-style-raw-v-6-job-id-52618d9f8589484b87c969cc439d417e_939033-131154.jpg?w=360?w=600&auto=format&fit=crop&q=80" 
+                src="https://www.image2url.com/r2/default/images/1782185989368-6f1445ce-20a3-46c7-b1f7-52b45bc56155.png?w=600&auto=format&fit=crop&q=80" 
                 alt="Student Portal" 
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
               />
@@ -1093,7 +1093,7 @@ export default function Home() {
             {/* Hero Image */}
             <div className="h-[220px] overflow-hidden relative">
               <img 
-                src="https://thumbs.dreamstime.com/b/astonished-father-son-celebrating-online-success-using-laptop-home-father-son-astonished-receiving-good-news-using-170471281.jpg?w=600&auto=format&fit=crop&q=80" 
+                src="https://www.image2url.com/r2/default/images/1782186803915-757b30c7-e0ab-4edb-a427-f14b52b20828.png?w=600&auto=format&fit=crop&q=80" 
                 alt="Guardian Portal" 
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
               />

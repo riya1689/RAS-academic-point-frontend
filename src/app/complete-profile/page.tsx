@@ -119,12 +119,12 @@ function CompleteProfileContent() {
         </form>
       </div>
     </div>
-  ); // মূল লেআউট রিটার্ন শেষ
-} // কন্টেন্ট ফাংশন শেষ
-export default function CompleteProfilePage() { // মূল ডিফল্ট পেজ কম্পোনেন্ট
-  return ( // রিটার্ন ভিউ
-    <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">Loading profile setup...</div>}> // লোডিং এর জন্য সাসপেন্স বাউন্ডারি
-      <CompleteProfileContent /> // কন্টেন্ট কম্পোনেন্ট রেন্ডার
-    </Suspense> // সাসপেন্স শেষ
-  ); // রিটার্ন শেষ
-} // কম্পোনেন্ট শেষ
+  ); 
+} 
+export default function CompleteProfilePage() { 
+  return ( 
+    <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">Loading profile setup...</div>}>
+      <CompleteProfileContent />
+    </Suspense>
+  ); 
+} 
