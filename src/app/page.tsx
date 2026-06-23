@@ -957,15 +957,8 @@ export default function Home() {
                 transform: idx === currentSlide ? 'scale(1)' : 'scale(1.05)' 
               }}
             />
-            {/* Theme Brand Gradient Overlay */}
-            <div 
-              className="absolute inset-0 opacity-80" 
-              style={{
-                background: isDarkMode 
-                  ? "linear-gradient(135deg, #081A12 0%, #0F462D 50%, #1A2433 100%)" 
-                  : "linear-gradient(135deg, #0F462D 0%, #1A6B4A 50%, #39A4D1 100%)"
-              }}
-            />
+            {/* Subtle Gradient Overlay for Readability */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/30" />
 
             {/* Slide Content */}
             <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-20">
@@ -976,7 +969,7 @@ export default function Home() {
                 <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight drop-shadow-sm">
                   {isBengali ? slide.titleBn : slide.titleEn}
                 </h1>
-                <p className="text-slate-255 text-base md:text-lg drop-shadow-sm max-w-xl">
+                <p className="text-slate-200 text-base md:text-lg drop-shadow-sm max-w-xl">
                   {isBengali ? slide.descBn : slide.descEn}
                 </p>
                 
